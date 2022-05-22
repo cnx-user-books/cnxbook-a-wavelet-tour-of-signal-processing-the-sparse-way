@@ -1,0 +1,1657 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Approximation and Processing in Bases</title>
+  <metadata>
+  <md:content-id>m23068</md:content-id><md:title>Approximation and Processing in Bases</md:title>
+  <md:abstract>This collection comprises Chapter 1 of the book
+    A Wavelet Tour of Signal Processing, The Sparse Way
+    (third edition, 2009) by Stéphane Mallat.  The book's
+    website at Academic Press is
+http://www.elsevier.com/wps/find/bookdescription.cws_home/714561/description#description
+    The book's complementary materials are available at
+http://wavelet-tour.com</md:abstract>
+  <md:uuid>96b66c9d-3611-4839-9a49-2d9a1372f255</md:uuid>
+</metadata>
+
+<content>
+      <para id="id2258270">Analog-to-digital signal conversion is the first step of digital signal
+processing. Chapter 3 explains that it amounts to
+projecting the signal over a basis of an
+approximation space. Most often, the resulting
+digital representation remains much too large and needs to be further
+reduced. A digital image typically includes more than <m:math overflow="scroll"><m:msup><m:mn>10</m:mn><m:mn>6</m:mn></m:msup></m:math>
+samples and a
+CD music recording has <m:math overflow="scroll"><m:mrow><m:mn>40</m:mn><m:mspace width="0.45pt"/><m:mo>×</m:mo><m:msup><m:mn>10</m:mn><m:mn>3</m:mn></m:msup></m:mrow></m:math> samples per second.
+Sparse representations that reduce the number of parameters can be
+obtained by thresholding coefficients in an appropriate orthogonal basis.
+Efficient compression and noise-reduction algorithms are then implemented
+with simple operators in this basis.</para>
+      <section id="uid1">
+        <title>Stochastic versus Deterministic Signal Models</title>
+        <para id="id2258973">A representation is optimized relative to a signal class, corresponding to
+all potential signals encountered in an application.
+This requires building signal
+models that carry available prior information.
+</para>
+        <para id="id2258988">A signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> can be modeled as a realization
+of a random process <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>F</m:mi></m:mrow></m:math>, the probability distribution of which is known
+a priori. A Bayesian approach then
+tries to minimize the expected approximation error.
+Linear approximations are simpler because they only
+depend on the covariance. Chapter 9
+shows that optimal linear
+approximations are obtained on the basis of
+principal components that are the eigenvectors
+of the covariance matrix.
+However, the expected error
+of nonlinear approximations depends on
+the full probability distribution of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>F</m:mi></m:mrow></m:math>. This distribution
+is most often not known for
+complex signals, such as images or sounds, because
+their transient structures
+are not adequately modeled as realizations of known processes such as
+Gaussian ones.</para>
+        <para id="id2259050">To optimize nonlinear representations,
+weaker but sufficiently powerful deterministic models can be elaborated.
+A deterministic model specifies a set <emphasis effect="italics">Θ</emphasis>, where the signal belongs.
+This set is defined by any prior information—for example, on the
+time-frequency localization of transients in musical recordings
+or on the geometric regularity of edges in images.
+Simple
+models can also define <emphasis effect="italics">Θ</emphasis> as a ball in a functional space,
+with a specific regularity norm such as a total variation norm.
+A stochastic model is richer because it provides
+the probability distribution in <emphasis effect="italics">Θ</emphasis>.
+When this distribution is not available,
+the average error cannot be calculated and is replaced by the maximum
+error over <emphasis effect="italics">Θ</emphasis>. Optimizing the representation then amounts
+to mini-mizing this maximum error, which is called a <emphasis effect="italics">minimax</emphasis> optimization.
+</para>
+        
+      </section>
+      <section id="uid3">
+        <title>Sampling with Linear Approximations</title>
+        <para id="id2259139">Analog-to-digital signal conversion is most often implemented with
+a linear approximation
+operator that filters and samples the input analog signal. From these samples,
+a linear digital-to-analog converter recovers a projection of the original
+analog signal over an approximation space whose dimension depends on the
+sampling density. 
+Linear approximations project signals in spaces of lowest possible dimensions
+to reduce computations and storage cost, while controlling the
+resulting error.</para>
+        <section id="uid5">
+          <title>Sampling Theorems</title>
+          <para id="id2259171">Let us consider finite energy signals
+<m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/></m:mrow><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mo>=</m:mo><m:mo>∫</m:mo><m:msup><m:mrow><m:mo>|</m:mo><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow><m:mo>|</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mspace width="0.166667em"/><m:mi>d</m:mi><m:mi>x</m:mi></m:mrow></m:math> of finite support, which
+is normalized to <m:math overflow="scroll"><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow></m:math> or <m:math overflow="scroll"><m:msup><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:math> for images.
+A sampling process implements
+a filtering of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> with a low-pass impulse response
+<m:math overflow="scroll"><m:mrow><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>¯</m:mo></m:mover><m:mi>s</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>
+and a uniform sampling to output a discrete signal:</para>
+          <equation id="id2259590">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mi>f</m:mi>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:mover accent="true">
+                  <m:mi>f</m:mi>
+                  <m:mo>¯</m:mo>
+                </m:mover>
+                <m:mo>☆</m:mo>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>φ</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>s</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mi>s</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mspace width="1.em"/>
+                <m:mtext>for</m:mtext>
+                <m:mspace width="1.em"/>
+                <m:mn>0</m:mn>
+                <m:mo>≤</m:mo>
+                <m:mi>n</m:mi>
+                <m:mo>&lt;</m:mo>
+                <m:mi>N</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2259669">In two dimensions, <m:math overflow="scroll"><m:mrow><m:mi>n</m:mi><m:mo>=</m:mo><m:mo>(</m:mo><m:msub><m:mi>n</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>n</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:mi>x</m:mi><m:mo>=</m:mo><m:mo>(</m:mo><m:msub><m:mi>x</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>x</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow></m:math>.
+These filtered samples can also be written as inner products:</para>
+          <equation id="id2259742">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mover accent="true">
+                  <m:mi>f</m:mi>
+                  <m:mo>¯</m:mo>
+                </m:mover>
+                <m:mo>☆</m:mo>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>φ</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>s</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mi>s</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mo>∫</m:mo>
+                <m:mi>f</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>u</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>φ</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>s</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mi>s</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>u</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:mi>d</m:mi>
+                <m:mi>u</m:mi>
+                <m:mo>=</m:mo>
+                <m:mo>〈</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:mi>f</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mi>φ</m:mi>
+                  <m:mi>s</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mi>s</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>〉</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2259880">with <m:math overflow="scroll"><m:mrow><m:msub><m:mi>φ</m:mi><m:mi>s</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow><m:mo>=</m:mo><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>¯</m:mo></m:mover><m:mi>s</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mo>-</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>. Chapter 3 explains that
+<emphasis effect="italics">φ<sub>s</sub></emphasis> is chosen, like in the classic Shannon–Whittaker sampling theorem,
+so that a family of functions <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>φ</m:mi><m:mi>s</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>-</m:mo><m:mi>n</m:mi><m:mi>s</m:mi><m:mo>)</m:mo></m:mrow><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>1</m:mn><m:mo>≤</m:mo><m:mi>n</m:mi><m:mo>≤</m:mo><m:mi>N</m:mi></m:mrow></m:msub></m:math> is a basis of an appropriate
+approximation space <emphasis effect="italics">U<sub>N</sub></emphasis>.
+The best linear approximation of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover></m:mrow></m:math> in <emphasis effect="italics">U<sub>N</sub></emphasis> recovered
+from these samples is the orthogonal projection <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mi>N</m:mi></m:msub></m:mrow></m:math> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> in
+<emphasis effect="italics">U<sub>N</sub></emphasis>, and if the basis is orthonormal, then</para>
+          <equation id="uid7">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:msub>
+                        <m:mover accent="true">
+                          <m:mi>f</m:mi>
+                          <m:mo>¯</m:mo>
+                        </m:mover>
+                        <m:mi>N</m:mi>
+                      </m:msub>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:mi>x</m:mi>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                      <m:mo>=</m:mo>
+                      <m:munderover>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>n</m:mi>
+                          <m:mo>=</m:mo>
+                          <m:mn>0</m:mn>
+                        </m:mrow>
+                        <m:mrow>
+                          <m:mi>N</m:mi>
+                          <m:mo>-</m:mo>
+                          <m:mn>1</m:mn>
+                        </m:mrow>
+                      </m:munderover>
+                      <m:mi>f</m:mi>
+                      <m:mrow>
+                        <m:mo>[</m:mo>
+                        <m:mi>n</m:mi>
+                        <m:mo>]</m:mo>
+                      </m:mrow>
+                      <m:mspace width="0.166667em"/>
+                      <m:msub>
+                        <m:mi>φ</m:mi>
+                        <m:mi>s</m:mi>
+                      </m:msub>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:mi>x</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:mi>n</m:mi>
+                        <m:mi>s</m:mi>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+          <para id="id2260208">A sampling theorem states that
+if <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>∈</m:mo><m:msub><m:mi mathvariant="bold">U</m:mi><m:mi>N</m:mi></m:msub></m:mrow></m:math> then <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>=</m:mo><m:msub><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mi>N</m:mi></m:msub></m:mrow></m:math> so
+recovers <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> from the
+measured samples. Most often, <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover></m:mrow></m:math> does not belong to this
+approximation space. It is called <emphasis effect="italics">aliasing</emphasis> in the context
+of Shannon–Whittaker sampling, where <emphasis effect="italics">U<sub>N</sub></emphasis> is the space
+of functions having a frequency support restricted to the <emphasis effect="italics">N</emphasis> lower frequencies.
+The approximation error <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/></m:mrow><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>-</m:mo><m:msub><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mi>N</m:mi></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math> must then be controlled.</para>
+        </section>
+        <section id="uid8">
+          <title>Linear Approximation Error</title>
+          <para id="id2260417">The approximation error is computed by finding an orthogonal basis <m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">B</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mover accent="true"><m:mi>g</m:mi><m:mo>¯</m:mo></m:mover><m:mi>m</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>m</m:mi><m:mo>&lt;</m:mo><m:mo>+</m:mo><m:mi>∞</m:mi></m:mrow></m:msub></m:mrow></m:math> of the whole analog signal space <m:math overflow="scroll"><m:mrow><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow><m:msup><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>, with the first <emphasis effect="italics">N</emphasis> vector <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mover accent="true"><m:mi>g</m:mi><m:mo>¯</m:mo></m:mover><m:mi>m</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>m</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:msub></m:math> that defines an orthogonal basis of <emphasis effect="italics">U<sub>N</sub></emphasis>. Thus, the orthogonal
+projection on <emphasis effect="italics">U<sub>N</sub></emphasis> can be rewritten as</para>
+          <equation id="id2260616">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>f</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>N</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:munderover>
+                  <m:mo>∑</m:mo>
+                  <m:mrow>
+                    <m:mi>m</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mn>0</m:mn>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mi>N</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mn>1</m:mn>
+                  </m:mrow>
+                </m:munderover>
+                <m:mo>〈</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:mover accent="true">
+                  <m:mi>f</m:mi>
+                  <m:mo>¯</m:mo>
+                </m:mover>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>g</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mo>〉</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>g</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2260728">Since <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>=</m:mo><m:msubsup><m:mo>∑</m:mo><m:mrow><m:mi>m</m:mi><m:mo>=</m:mo><m:mn>0</m:mn></m:mrow><m:mrow><m:mo>+</m:mo><m:mi>∞</m:mi></m:mrow></m:msubsup><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>,</m:mo><m:msub><m:mover accent="true"><m:mi>g</m:mi><m:mo>¯</m:mo></m:mover><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:mspace width="0.166667em"/><m:msub><m:mover accent="true"><m:mi>g</m:mi><m:mo>¯</m:mo></m:mover><m:mi>m</m:mi></m:msub></m:mrow></m:math>,
+the approximation error is the energy of the removed inner products:</para>
+          <equation id="id2260823"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mi>ϵ</m:mi>
+                  <m:mi>l</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>N</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:mi>f</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>=</m:mo>
+                  <m:mo>∥</m:mo>
+                  <m:mspace width="0.166667em"/>
+                </m:mrow>
+                <m:mover accent="true">
+                  <m:mi>f</m:mi>
+                  <m:mo>¯</m:mo>
+                </m:mover>
+                <m:mo>-</m:mo>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>f</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>N</m:mi>
+                </m:msub>
+                <m:msup>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>2</m:mn>
+                </m:msup>
+                <m:mo>=</m:mo>
+                <m:munderover>
+<m:mrow>
+                  <m:mo>∑</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>m</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mi>N</m:mi>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mo>+</m:mo>
+                    <m:mi>∞</m:mi>
+                  </m:mrow>
+                </m:munderover>
+                <m:msup>
+                  <m:mrow>
+                    <m:mo>|</m:mo>
+                    <m:mo>〈</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:mover accent="true">
+                      <m:mi>f</m:mi>
+                      <m:mo>¯</m:mo>
+                    </m:mover>
+                    <m:mo>,</m:mo>
+                    <m:msub>
+                      <m:mover accent="true">
+                        <m:mi>g</m:mi>
+                        <m:mo>¯</m:mo>
+                      </m:mover>
+                      <m:mi>m</m:mi>
+                    </m:msub>
+                    <m:mo>〉</m:mo>
+                    <m:mo>|</m:mo>
+                  </m:mrow>
+                  <m:mn>2</m:mn>
+                </m:msup>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2260959">This error decreases quickly
+when <emphasis effect="italics">N</emphasis> increases if the coefficient
+amplitudes <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/></m:mrow><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>,</m:mo><m:msub><m:mover accent="true"><m:mi>g</m:mi><m:mo>¯</m:mo></m:mover><m:mi>m</m:mi></m:msub><m:mrow><m:mo>〉</m:mo><m:mo>|</m:mo></m:mrow></m:mrow></m:math> have a fast decay when the index <emphasis effect="italics">m</emphasis> increases.
+The dimension <emphasis effect="italics">N</emphasis> is adjusted to the desired approximation error.</para>
+          <para id="id2261039">Figure (a) shows a discrete image <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math>
+approximated with <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>=</m:mo><m:msup><m:mn>256</m:mn><m:mn>2</m:mn></m:msup></m:mrow></m:math> pixels.
+Figure
+(c) displays a lower-resolution
+image <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:msub></m:mrow></m:math> projected on a space <m:math overflow="scroll"><m:msub><m:mi mathvariant="bold">U</m:mi><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:msub></m:math> of dimension <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:math>,
+generated by <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:math> large-scale wavelets. It is calculated by
+setting all the
+wavelet coefficients to zero at the first two smaller scales.
+The approximation error is
+<m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>-</m:mo></m:mrow><m:msub><m:mi>f</m:mi><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mo>/</m:mo><m:msup><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mo>=</m:mo><m:mn>14</m:mn><m:mspace width="0.45pt"/><m:mo>×</m:mo><m:msup><m:mn>10</m:mn><m:mrow><m:mo>-</m:mo><m:mn>3</m:mn></m:mrow></m:msup></m:mrow></m:math>.
+Reducing the resolution introduces more blur and errors.
+A linear approximation space <emphasis effect="italics">U<sub>N</sub></emphasis> corresponds to
+a uniform grid that approximates precisely uniform regular signals.
+Since images <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover></m:mrow></m:math> are often not
+uniformly regular, it is necessary to measure it at a high-resolution
+<emphasis effect="italics">N</emphasis>. This is why digital cameras have a resolution that increases
+as technology improves. </para>
+        </section>
+      </section>
+      <section id="uid10">
+        <title>Sparse Nonlinear Approximations</title>
+        <para id="id2261304">Linear approximations reduce the space dimensionality but can introduce
+important errors when reducing the resolution
+if the signal is not uniformly regular, as shown by
+Figure
+(c). To improve such approximations,
+more coefficients should be kept where needed—not
+in regular regions but near sharp transitions and edges.This requires defining an irregular sampling adapted to the local signal regularity.
+This optimized irregular sampling has a simple equivalent solution
+through nonlinear approximations in wavelet bases.</para>
+        <para id="id2261325">Nonlinear approximations operate in two stages. First, a linear operator
+approximates the analog signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover></m:mrow></m:math>
+with <emphasis effect="italics">N</emphasis> samples written
+<m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mrow><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow><m:mo>=</m:mo><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mo>☆</m:mo><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>¯</m:mo></m:mover><m:mi>s</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>n</m:mi><m:mi>s</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>.
+Then, a nonlinear approximation of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> is computed
+to reduce the <emphasis effect="italics">N</emphasis> coefficients <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> to <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>≪</m:mo><m:mi>N</m:mi></m:mrow></m:math> coefficients
+in a sparse representation.</para>
+        <para id="id2261486">The discrete signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> can be considered as a vector of <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:math>.
+Inner products and norms in <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:math> are written</para>
+        <equation id="id2261541"><m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mo>〈</m:mo>
+              <m:mspace width="0.166667em"/>
+              <m:mi>f</m:mi>
+              <m:mo>,</m:mo>
+              <m:mi>g</m:mi>
+              <m:mo>〉</m:mo>
+              <m:mo>=</m:mo>
+              <m:munderover>
+<m:mrow>        
+        <m:mo>∑</m:mo>
+</m:mrow>        
+        <m:mrow>
+                  <m:mi>n</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>0</m:mn>
+                </m:mrow>
+                <m:mrow>
+                  <m:mi>N</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:munderover>
+              <m:mi>f</m:mi>
+              <m:mrow>
+                <m:mo>[</m:mo>
+                <m:mi>n</m:mi>
+                <m:mo>]</m:mo>
+              </m:mrow>
+              <m:mspace width="0.166667em"/>
+              <m:msup>
+                <m:mi>g</m:mi>
+                <m:mo>*</m:mo>
+              </m:msup>
+              <m:msup>
+                <m:mrow>
+                  <m:mrow>
+                    <m:mo>[</m:mo>
+                    <m:mi>n</m:mi>
+                    <m:mo>]</m:mo>
+                  </m:mrow>
+                  <m:mspace width="1.em"/>
+                  <m:mtext>and</m:mtext>
+                  <m:mspace width="1.em"/>
+                  <m:mo>∥</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>f</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mo>=</m:mo>
+              <m:munderover>
+<m:mrow>
+                <m:mo>∑</m:mo>
+</m:mrow>        
+        <m:mrow>
+                  <m:mi>n</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>0</m:mn>
+                </m:mrow>
+                <m:mrow>
+                  <m:mi>N</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:munderover>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>|</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>f</m:mi>
+                  <m:mrow>
+                    <m:mo>[</m:mo>
+                    <m:mi>n</m:mi>
+                    <m:mo>]</m:mo>
+                  </m:mrow>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2261692">To obtain a sparse representation with a
+nonlinear approximation, we choose a new orthonormal basis
+<m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">B</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mrow><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math> of <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:math>,
+which concentrates the signal energy as much as possible
+over few coefficients. Signal coefficients
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:math> are computed from the <emphasis effect="italics">N</emphasis>
+input sample values <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math>
+with an orthogonal change of basis that
+takes <emphasis effect="italics">N<sup>2</sup></emphasis> operations in nonstructured bases.
+In a wavelet or Fourier bases, fast
+algorithms require, respectively, <m:math overflow="scroll"><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:msub><m:mo form="prefix">log</m:mo><m:mn>2</m:mn></m:msub><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math> operations.</para>
+        <section id="uid11">
+          <title>Approximation by Thresholding</title>
+          <para id="id2261917">For <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>, an approximation <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>M</m:mi></m:msub></m:mrow></m:math> is computed by selecting
+the “best” <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math> vectors within <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math>.
+The orthogonal projection
+of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> on the space <emphasis effect="italics">V<sub>λ</sub></emphasis> generated by <emphasis effect="italics">M</emphasis> vectors <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Λ</m:mi></m:mrow></m:msub></m:math>
+in <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math> is </para>
+          <equation id="uid15">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>λ</m:mi>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:munder>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>m</m:mi>
+                          <m:mo>∈</m:mo>
+                          <m:mi>λ</m:mi>
+                        </m:mrow>
+                      </m:munder>
+                      <m:mo>〈</m:mo>
+                      <m:mspace width="0.166667em"/>
+                      <m:mi>f</m:mi>
+                      <m:mspace width="-0.5pt"/>
+                      <m:mo>,</m:mo>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mo>〉</m:mo>
+                      <m:mspace width="0.166667em"/>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+          <para id="id2262159">
+Since <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>=</m:mo><m:msub><m:mo>∑</m:mo><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>γ</m:mi></m:mrow></m:msub><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:mspace width="0.166667em"/><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub></m:mrow></m:math>, the resulting error is</para>
+          <equation id="uid16">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:mrow>
+                        <m:mo>∥</m:mo>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>f</m:mi>
+                        <m:mo>-</m:mo>
+                      </m:mrow>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>λ</m:mi>
+                      </m:msub>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mo>∥</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mo>=</m:mo>
+                      <m:munder>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>m</m:mi>
+                          <m:mrow>
+                            <m:mo>∈</m:mo>
+                            <m:mspace width="-0.166667em"/>
+                            <m:mspace width="-0.166667em"/>
+                            <m:mspace width="-0.166667em"/>
+                            <m:mo>/</m:mo>
+                          </m:mrow>
+                          <m:mi>λ</m:mi>
+                        </m:mrow>
+                      </m:munder>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mo>|</m:mo>
+                          <m:mo>〈</m:mo>
+                          <m:mspace width="0.166667em"/>
+                          <m:mi>f</m:mi>
+                          <m:mo>,</m:mo>
+                          <m:msub>
+                            <m:mi>g</m:mi>
+                            <m:mi>m</m:mi>
+                          </m:msub>
+                          <m:mo>〉</m:mo>
+                          <m:mo>|</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+          <para id="id2262336">
+We write <m:math overflow="scroll"><m:mrow><m:mo>|</m:mo><m:mi>λ</m:mi><m:mo>|</m:mo></m:mrow></m:math> the size of the set <emphasis effect="italics">λ</emphasis>.
+The best <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mo>|</m:mo><m:mi>λ</m:mi><m:mo>|</m:mo></m:mrow></m:math> term approximation, which minimizes
+<m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>-</m:mo></m:mrow><m:msub><m:mi>f</m:mi><m:mi>λ</m:mi></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>,  is thus
+obtained by selecting the <emphasis effect="italics">M</emphasis>
+coefficients of largest amplitude.
+These coefficients are above a threshold <emphasis effect="italics">T</emphasis>
+that depends on <emphasis effect="italics">M</emphasis>: </para>
+          <equation id="uid18">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>M</m:mi>
+                      </m:msub>
+                      <m:mrow>
+                        <m:mspace width="0.222222em"/>
+                        <m:mo>=</m:mo>
+                        <m:mspace width="0.222222em"/>
+                      </m:mrow>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:msub>
+                          <m:mi>λ</m:mi>
+                          <m:mi>T</m:mi>
+                        </m:msub>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:munder>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>m</m:mi>
+                          <m:mo>∈</m:mo>
+                          <m:msub>
+                            <m:mi>λ</m:mi>
+                            <m:mi>T</m:mi>
+                          </m:msub>
+                        </m:mrow>
+                      </m:munder>
+                      <m:mo>〈</m:mo>
+                      <m:mspace width="0.166667em"/>
+                      <m:mi>f</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mo>〉</m:mo>
+                      <m:mspace width="0.166667em"/>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mspace width="1.em"/>
+                      <m:mtext>with</m:mtext>
+                      <m:mspace width="1.em"/>
+                      <m:msub>
+                        <m:mi>λ</m:mi>
+                        <m:mi>T</m:mi>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:mrow>
+                        <m:mo>{</m:mo>
+                        <m:mi>m</m:mi>
+                        <m:mo>∈</m:mo>
+                        <m:mi>γ</m:mi>
+                        <m:mrow>
+                          <m:mspace width="3.33333pt"/>
+                          <m:mo>:</m:mo>
+                          <m:mspace width="3.33333pt"/>
+                        </m:mrow>
+                        <m:mo>|</m:mo>
+                        <m:mo>〈</m:mo>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>f</m:mi>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mo>〉</m:mo>
+                      <m:mrow>
+                        <m:mo>|</m:mo>
+                        <m:mo>≥</m:mo>
+                        <m:mi>T</m:mi>
+                        <m:mo>}</m:mo>
+                      </m:mrow>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+          <para id="id2262635">
+This approximation is nonlinear because the approximation
+set <emphasis effect="italics">λ<sub>T</sub></emphasis> changes with <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>.
+The resulting approximation error is:</para>
+          <equation id="uid19">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>ϵ</m:mi>
+                        <m:mi>n</m:mi>
+                      </m:msub>
+                      <m:mrow>
+                        <m:mrow>
+                          <m:mo>(</m:mo>
+                          <m:mi>M</m:mi>
+                          <m:mo>,</m:mo>
+                          <m:mi>f</m:mi>
+                          <m:mo>)</m:mo>
+                        </m:mrow>
+                        <m:mo>=</m:mo>
+                        <m:mo>∥</m:mo>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>f</m:mi>
+                        <m:mo>-</m:mo>
+                      </m:mrow>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>M</m:mi>
+                      </m:msub>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mo>∥</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mo>=</m:mo>
+                      <m:munder>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>m</m:mi>
+                          <m:mrow>
+                            <m:mo>∈</m:mo>
+                            <m:mspace width="-0.166667em"/>
+                            <m:mspace width="-0.166667em"/>
+                            <m:mspace width="-0.166667em"/>
+                            <m:mo>/</m:mo>
+                          </m:mrow>
+                          <m:msub>
+                            <m:mi>Λ</m:mi>
+                            <m:mi>T</m:mi>
+                          </m:msub>
+                        </m:mrow>
+                      </m:munder>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mo>|</m:mo>
+                          <m:mo>〈</m:mo>
+                          <m:mspace width="0.166667em"/>
+                          <m:mi>f</m:mi>
+                          <m:mo>,</m:mo>
+                          <m:msub>
+                            <m:mi>g</m:mi>
+                            <m:mi>m</m:mi>
+                          </m:msub>
+                          <m:mo>〉</m:mo>
+                          <m:mo>|</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+          <para id="id2262808"><link target-id=""/>(b) shows that
+the approximation support <emphasis effect="italics">λ<sub>T</sub></emphasis> of an image in a wavelet
+orthonormal basis depends on the geometry of edges and textures.
+Keeping large wavelet
+coefficients is equivalent to constructing an adaptive
+approximation grid specified by the scale–space support <emphasis effect="italics">λ<sub>T</sub></emphasis>.
+It increases the approximation resolution
+where the signal is irregular. The geometry of <emphasis effect="italics">λ<sub>T</sub></emphasis>
+gives the spatial distribution of sharp image transitions and edges,
+and their propagation across scales.
+Chapter 6 proves that wavelet coefficients give important information
+about singularities and local Lipschitz regularity.
+This example illustrates how approximation support provides “geometric”
+information on <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>, relative to a dictionary,
+that is a wavelet basis in this example.</para>
+          <para id="id2262893"><link target-id=""/>(d) gives the nonlinear wavelet approximation
+<m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>M</m:mi></m:msub></m:mrow></m:math> recovered from the <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:math> large-amplitude wavelet coefficients,
+with an error <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>-</m:mo></m:mrow><m:msub><m:mi>f</m:mi><m:mi>M</m:mi></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mo>/</m:mo><m:msup><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mo>=</m:mo><m:mn>5</m:mn><m:mspace width="0.45pt"/><m:mo>×</m:mo><m:msup><m:mn>10</m:mn><m:mrow><m:mo>-</m:mo><m:mn>3</m:mn></m:mrow></m:msup></m:mrow></m:math>.
+This error is nearly three times smaller than
+the linear approximation error
+obtained with the same number of wavelet coefficients, and the image
+quality is much better.</para>
+          <para id="id2263015">An analog signal can be recovered
+from the discrete nonlinear approxima-tion <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>M</m:mi></m:msub></m:mrow></m:math>:</para>
+          <equation id="id2263040"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>f</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>M</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:munderover>
+<m:mrow>
+                  <m:mo>∑</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>n</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mn>0</m:mn>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mi>N</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mn>1</m:mn>
+                  </m:mrow>
+                </m:munderover>
+                <m:msub>
+                  <m:mi>f</m:mi>
+                  <m:mi>M</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mi>φ</m:mi>
+                  <m:mi>s</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mi>s</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2263137">Since all projections are orthogonal,
+the overall approximation
+error on the original analog signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>¯</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> is the sum of
+the analog sampling error and the discrete nonlinear error:</para>
+          <equation id="id2263175">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mrow>
+                  <m:mo>∥</m:mo>
+                  <m:mspace width="0.166667em"/>
+                </m:mrow>
+                <m:mover accent="true">
+                  <m:mi>f</m:mi>
+                  <m:mo>¯</m:mo>
+                </m:mover>
+                <m:mo>-</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>f</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>M</m:mi>
+                </m:msub>
+                <m:msup>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>2</m:mn>
+                </m:msup>
+                <m:mrow>
+                  <m:mo>=</m:mo>
+                  <m:mo>∥</m:mo>
+                  <m:mspace width="0.166667em"/>
+                </m:mrow>
+                <m:mover accent="true">
+                  <m:mi>f</m:mi>
+                  <m:mo>¯</m:mo>
+                </m:mover>
+                <m:mo>-</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mover accent="true">
+                    <m:mi>f</m:mi>
+                    <m:mo>¯</m:mo>
+                  </m:mover>
+                  <m:mi>N</m:mi>
+                </m:msub>
+                <m:msup>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>2</m:mn>
+                </m:msup>
+                <m:mo>+</m:mo>
+                <m:msup>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>f</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>M</m:mi>
+                    </m:msub>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>2</m:mn>
+                </m:msup>
+                <m:mo>=</m:mo>
+                <m:msub>
+                  <m:mi>ϵ</m:mi>
+                  <m:mi>l</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>N</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>f</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>+</m:mo>
+                <m:msub>
+                  <m:mi>ϵ</m:mi>
+                  <m:mi>n</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>M</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>f</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2263352">In practice, <emphasis effect="italics">N</emphasis> is imposed by the resolution of the signal-acquisition
+hardware, and <emphasis effect="italics">M</emphasis> is typically adjusted so that
+<m:math overflow="scroll"><m:mrow><m:msub><m:mi>ϵ</m:mi><m:mi>n</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>M</m:mi><m:mo>,</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mrow><m:mspace width="0.222222em"/><m:mo>≥</m:mo><m:mspace width="0.222222em"/></m:mrow><m:msub><m:mi>ϵ</m:mi><m:mi>l</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>,</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>.</para>
+        </section>
+        <section id="uid20">
+          <title>Sparsity with Regularity</title>
+          <para id="id2263445">Sparse representations are obtained in a basis that takes
+advantage of some form of regularity of the input signals,
+creating many small-amplitude coefficients.
+Since wavelets have localized support,
+functions with isolated singularities produce few
+large-amplitude wavelet coefficients in the neighborhood
+of these singularities. Nonlinear wavelet approximation produces a small error over
+spaces of functions that do not have “too many”
+sharp transitions and singularities.
+Chapter 9 shows that functions
+having a bounded total variation norm are
+useful models for images with nonfractal (finite length) edges.</para>
+          <para id="id2263469">Edges often define regular geometric curves. Wavelets
+detect the location of edges but their square support
+cannot take advantage of their potential geometric regularity.
+More sparse representations are defined in dictionaries of
+curvelets or bandlets, which have elongated support in multiple directions,
+that can be adapted to this geometrical regularity.
+In such dictionaries, the approximation support <emphasis effect="italics">λ<sub>T</sub></emphasis> is smaller
+but provides explicit information about edges' local geometrical
+properties such as their orientation. In this context, geometry
+does not just apply to multidimensional signals.
+Audio signals, such as musical recordings, also have a
+complex geometric regularity in time-frequency dictionaries.</para>
+        </section>
+      </section>
+      <section id="uid21">
+        <title>Compression</title>
+        <para id="id2263508">Storage limitations and fast transmission through narrow
+bandwidth channels require compression of
+signals while minimizing degradation.
+Transform codes compress signals by coding a sparse representation.
+Chapter 10 introduces the information theory needed to understand these codes
+and to optimize their performance.</para>
+        <para id="id2263529">In a compression framework,
+the analog signal has already been discretized into
+a signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> of size <emphasis effect="italics">N</emphasis>.
+This discrete signal is
+decomposed in an orthonormal basis <m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">B</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math> of <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:math>:</para>
+        <equation id="id2263621"><m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>f</m:mi>
+              <m:mo>=</m:mo>
+              <m:munder>
+<m:mrow>
+                <m:mo>∑</m:mo>
+</m:mrow>        
+        <m:mrow>
+                  <m:mi>m</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:mi>Γ</m:mi>
+                </m:mrow>
+              </m:munder>
+              <m:mo>〈</m:mo>
+              <m:mspace width="0.166667em"/>
+              <m:mi>f</m:mi>
+              <m:mo>,</m:mo>
+              <m:msub>
+                <m:mi>g</m:mi>
+                <m:mi>m</m:mi>
+              </m:msub>
+              <m:mo>〉</m:mo>
+              <m:mspace width="0.166667em"/>
+              <m:msub>
+                <m:mi>g</m:mi>
+                <m:mi>m</m:mi>
+              </m:msub>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2263681">Coefficients <m:math overflow="scroll"><m:mrow><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo></m:mrow></m:math> are approximated
+by quantized values <m:math overflow="scroll"><m:mrow><m:mi>Q</m:mi><m:mo>(</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:mo>)</m:mo></m:mrow></m:math>. 
+If <emphasis effect="italics">Q</emphasis> is auniform quantizer of step <emphasis effect="italics">Δ</emphasis>, then
+<m:math overflow="scroll"><m:mrow><m:mo>|</m:mo><m:mi>x</m:mi><m:mo>-</m:mo><m:mi>Q</m:mi><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo><m:mo>|</m:mo><m:mo>≤</m:mo><m:mi>Δ</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:math>; and if <m:math overflow="scroll"><m:mrow><m:mo>|</m:mo><m:mi>x</m:mi><m:mo>|</m:mo><m:mo>&lt;</m:mo><m:mi>Δ</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:math>, then
+<m:math overflow="scroll"><m:mrow><m:mi>Q</m:mi><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo><m:mo>=</m:mo><m:mn>0</m:mn></m:mrow></m:math>.
+The signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>˜</m:mo></m:mover></m:mrow></m:math> restored from quantized coefficients is</para>
+        <equation id="id2263874"><m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mover accent="true">
+                <m:mi>f</m:mi>
+                <m:mo>˜</m:mo>
+              </m:mover>
+              <m:mo>=</m:mo>
+              <m:munder>
+<m:mrow>
+                <m:mo>∑</m:mo>
+</m:mrow>        
+        <m:mrow>
+                  <m:mi>m</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:mi>Γ</m:mi>
+                </m:mrow>
+              </m:munder>
+              <m:mi>Q</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mo>〈</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:mi>f</m:mi>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mo>〉</m:mo>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mspace width="0.166667em"/>
+              <m:msub>
+                <m:mi>g</m:mi>
+                <m:mi>m</m:mi>
+              </m:msub>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2263950">An entropy code records these coefficients with <emphasis effect="italics">R</emphasis> bits.
+The goal is to minimize the signal-distortion rate
+<m:math overflow="scroll"><m:mrow><m:mrow><m:mi>d</m:mi><m:mrow><m:mo>(</m:mo><m:mi>R</m:mi><m:mo>,</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mo>=</m:mo><m:mo>∥</m:mo><m:mspace width="0.166667em"/></m:mrow><m:mover accent="true"><m:mi>f</m:mi><m:mo>˜</m:mo></m:mover><m:msup><m:mrow><m:mo>-</m:mo><m:mi>f</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>.</para>
+        <para id="id2264019">The coefficients not quantized to zero correspond to the set
+<m:math overflow="scroll"><m:mrow><m:msub><m:mi>λ</m:mi><m:mi>T</m:mi></m:msub><m:mo>=</m:mo><m:mrow><m:mo>{</m:mo><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>γ</m:mi><m:mo>:</m:mo><m:mo>|</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo></m:mrow><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:mrow><m:mo>|</m:mo><m:mo>≥</m:mo><m:mi>T</m:mi><m:mo>}</m:mo></m:mrow></m:mrow></m:math> with <m:math overflow="scroll"><m:mrow><m:mi>T</m:mi><m:mo>=</m:mo><m:mi>Δ</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:math>.
+For sparse signals, Chapter 10
+shows that the bit budget <emphasis effect="italics">R</emphasis> is
+dominated by the number of bits
+to code <emphasis effect="italics">λ<sub>T</sub></emphasis> in <emphasis effect="italics">γ</emphasis>, which is nearly proportional to
+its size <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo></m:mrow><m:msub><m:mi>λ</m:mi><m:mi>T</m:mi></m:msub><m:mrow><m:mo>|</m:mo></m:mrow></m:mrow></m:math>.
+This means that the “information” about a sparse representation
+ismostly geometric.
+Moreover, the distortion is 
+dominated by the nonlinear approximation error <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>-</m:mo></m:mrow><m:msub><m:mi>f</m:mi><m:msub><m:mi>Λ</m:mi><m:mi>T</m:mi></m:msub></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>,
+for <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:msub><m:mi>Λ</m:mi><m:mi>T</m:mi></m:msub></m:msub><m:mo>=</m:mo><m:msub><m:mo>∑</m:mo><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>λ</m:mi><m:mi>T</m:mi></m:msub></m:mrow></m:msub><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub></m:mrow></m:math>. Compression is
+thus a sparse approximation problem. For a given distortion <m:math overflow="scroll"><m:mrow><m:mi>d</m:mi><m:mo>(</m:mo><m:mi>R</m:mi><m:mo>,</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow></m:math>, minimizing <emphasis effect="italics">R</emphasis> requires reducing
+<m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo></m:mrow><m:msub><m:mi>λ</m:mi><m:mi>T</m:mi></m:msub><m:mrow><m:mo>|</m:mo></m:mrow></m:mrow></m:math> and thus optimizing the sparsity.</para>
+        <para id="id2264344">The number of bits to code <emphasis effect="italics">Λ<sub>T</sub></emphasis>
+can take advantage of any prior information on the geometry.
+<link target-id=""/>(b) shows that large wavelet coefficients
+are not randomly distributed. They have a tendency to be aggregated toward
+larger scales, and at fine scales they are
+regrouped along edge curves or in texture regions. Using such
+prior geometric models is a source of gain in coders such as JPEG-2000.</para>
+        <para id="id2264376">Chapter 10 describes the implementation of audio
+transform codes. Image transform codes
+in block cosine bases and wavelet bases are introduced, together with
+the JPEG and JPEG-2000 compression standards.</para>
+      </section>
+      <section id="uid26">
+        <title>Denoising</title>
+        <para id="id2264396">Signal-acquisition devices add noise that
+can be reduced by estimators using prior information on signal
+properties. Signal processing has long remained
+mostly Bayesian and linear.
+Nonlinear smoothing algorithms existed in statistics,
+but these procedures were often ad hoc and complex.
+Two statisticians, Donoho andJohnstone (DonohoJ:94),
+changed the “game” by proving that simple thresholding
+in sparse representations can yield
+nearly optimal nonlinear estimators.
+This was the beginning of a considerable refinement of nonlinear estimation
+algorithms that is still ongoing.</para>
+        <para id="id2264413">Let us consider digital measurements that add a random noise
+<m:math overflow="scroll"><m:mrow><m:mi>W</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> to the original signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math>:</para>
+        <equation id="id2264454">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>X</m:mi>
+              <m:mo>[</m:mo>
+              <m:mi>n</m:mi>
+              <m:mo>]</m:mo>
+              <m:mrow>
+                <m:mspace width="0.222222em"/>
+                <m:mo>=</m:mo>
+                <m:mspace width="0.222222em"/>
+              </m:mrow>
+              <m:mi>f</m:mi>
+              <m:mo>[</m:mo>
+              <m:mi>n</m:mi>
+              <m:mo>]</m:mo>
+              <m:mo>+</m:mo>
+              <m:mi>W</m:mi>
+              <m:mo>[</m:mo>
+              <m:mi>n</m:mi>
+              <m:mo>]</m:mo>
+              <m:mspace width="1.em"/>
+              <m:mtext>for</m:mtext>
+              <m:mspace width="1.em"/>
+              <m:mn>0</m:mn>
+              <m:mo>≤</m:mo>
+              <m:mi>n</m:mi>
+              <m:mo>&lt;</m:mo>
+              <m:mi>N</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2264524">The signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> is estimated 
+by transforming the noisy data <emphasis effect="italics">X</emphasis> with an operator <emphasis effect="italics">D</emphasis>:</para>
+        <equation id="id2264569">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mover accent="true">
+                <m:mi>F</m:mi>
+                <m:mo>˜</m:mo>
+              </m:mover>
+              <m:mo>=</m:mo>
+              <m:mi>D</m:mi>
+              <m:mi>X</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2264597">The risk of the estimator 
+<m:math overflow="scroll"><m:mover accent="true"><m:mi>F</m:mi><m:mo>˜</m:mo></m:mover></m:math> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> is the average error, calculated with
+respect to the probability distribution of noise <emphasis effect="italics">W</emphasis>:</para>
+        <equation id="id2264649">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>r</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>D</m:mi>
+                <m:mo>,</m:mo>
+                <m:mi>f</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:mi>E</m:mi>
+              <m:mo>{</m:mo>
+              <m:mo>∥</m:mo>
+              <m:mspace width="0.166667em"/>
+              <m:mi>f</m:mi>
+              <m:mo>-</m:mo>
+              <m:mi>D</m:mi>
+              <m:mi>X</m:mi>
+              <m:msup>
+                <m:mo>∥</m:mo>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mo>}</m:mo>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <section id="uid29">
+          <title>Bayes versus Minimax</title>
+          <para id="id2264715">To optimize the estimation operator <emphasis effect="italics">D</emphasis>, one must
+take advantage of prior 
+information available about signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>.
+In a Bayes framework, <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> is considered a realization
+of a random vector <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>F</m:mi></m:mrow></m:math>
+and the Bayes risk is the
+expected risk calculated with respect to the
+prior probability distribution <emphasis effect="italics">π</emphasis> of the random signal model <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>F</m:mi></m:mrow></m:math>:</para>
+          <equation id="id2264803">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mi>r</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>D</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>π</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:msub>
+                  <m:mi>E</m:mi>
+                  <m:mi>π</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>{</m:mo>
+                  <m:mi>r</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>D</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:mi>F</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>}</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2264858">Optimizing <emphasis effect="italics">D</emphasis> among all possible operators
+yields the <emphasis effect="italics">minimum Bayes risk</emphasis>: </para>
+          <equation id="id2264884"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mi>r</m:mi>
+                  <m:mi>n</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>π</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:munder>
+<m:mrow>
+                  <m:mo movablelimits="true" form="prefix">inf</m:mo>
+</m:mrow>
+                  <m:mrow>        
+            <m:mi>a</m:mi>
+                    <m:mi>l</m:mi>
+                    <m:mi>l</m:mi>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>D</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mi>r</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>D</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>π</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2264951">In the 1940s, Wald brought in a new perspective on statistics
+with a decision theory partly imported
+from the theory of games. This point of view uses
+deterministic models, where
+signals are elements of
+a set <emphasis effect="italics">Θ</emphasis>, without specifying their probability
+distribution in this set.
+To control the risk for any
+<m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>∈</m:mo><m:mi>Θ</m:mi></m:mrow></m:math>, we compute the maximum risk:</para>
+          <equation id="id2264998"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mi>r</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>D</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>Θ</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:munder>
+<m:mrow>
+                  <m:mo movablelimits="true" form="prefix">sup</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>f</m:mi>
+                    <m:mo>∈</m:mo>
+                    <m:mi>Θ</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mi>r</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>D</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>f</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2265058">The <emphasis effect="italics">minimax risk</emphasis> is the lower bound computed over all operators
+<emphasis effect="italics">D</emphasis>: </para>
+          <equation id="id2265085"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mi>r</m:mi>
+                  <m:mi>n</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>Θ</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:munder>
+<m:mrow>
+                  <m:mo movablelimits="true" form="prefix">inf</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>a</m:mi>
+                    <m:mi>l</m:mi>
+                    <m:mi>l</m:mi>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>D</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mi>r</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>D</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>Θ</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2265151">In practice,
+the goal is to find an operator <emphasis effect="italics">D</emphasis> that is simple to implement
+and yields a risk close to the minimax lower bound.</para>
+          <figure id="uid34">
+            <media id="uid34_media" alt="">
+              <image mime-type="image/png" src="../../media/newfig2.png" id="uid34_onlineimage" width="560"><!-- NOTE: attribute width changes image size online (pixels). original width is 560. --></image>
+              <image for="pdf" mime-type="application/postscript" src="../../media/newfig2-4de9.eps" id="uid34_printimage"/>
+            </media>
+          </figure>
+        </section>
+        <section id="uid35">
+          <title>Thresholding Estimators</title>
+          <para id="id2265187">It is tempting to restrict calculations to linear operators <emphasis effect="italics">D</emphasis> because of
+their simplicity. Optimal linear Wiener estimators are
+introduced in Chapter 11.
+Figure (a)
+is an image contaminated by Gaussian white noise.
+Figure (b) 
+shows an optimized
+linear filtering estimation <m:math overflow="scroll"><m:mrow><m:mover accent="true"><m:mi>F</m:mi><m:mo>˜</m:mo></m:mover><m:mo>=</m:mo><m:mi>X</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mo>☆</m:mo><m:mspace width="0.166667em"/></m:mrow><m:mi>h</m:mi><m:mrow><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:mrow></m:math>,
+which is therefore diagonal in a Fourier basis <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math>.
+This convolution operator averages the noise but also blurs the image
+and keeps low-frequency noise by retaining the image's low frequencies.</para>
+          <para id="id2265270">If <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> has a sparse representation in a dictionary, then projecting
+<emphasis effect="italics">X</emphasis> on the vectors of this sparse support can considerably
+improve linear estimators. The difficulty is identifying
+the sparse support of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> from the noisy data <emphasis effect="italics">X</emphasis>.
+Donoho and Johnstone (DonohoJ:94) proved that,
+in an orthonormal basis, a simple thresholding of noisy coefficients
+does the trick. Noisy signal coefficients in an orthonormal basis<m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">B</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math> are</para>
+          <equation id="id2265363">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mo>〈</m:mo>
+                <m:mi>X</m:mi>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mo>〉</m:mo>
+                <m:mo>=</m:mo>
+                <m:mo>〈</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:mi>f</m:mi>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mo>〉</m:mo>
+                <m:mo>+</m:mo>
+                <m:mo>〈</m:mo>
+                <m:mi>W</m:mi>
+                <m:mspace width="-1.0pt"/>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mo>〉</m:mo>
+                <m:mspace width="1.em"/>
+                <m:mtext>for</m:mtext>
+                <m:mspace width="1.em"/>
+                <m:mi>m</m:mi>
+                <m:mo>∈</m:mo>
+                <m:mi>γ</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2265451">Thresholding these noisy coefficients yields an
+orthogonal projection estimator
+</para>
+          <equation id="uid38">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:mover accent="true">
+                        <m:mi>F</m:mi>
+                        <m:mo>˜</m:mo>
+                      </m:mover>
+                      <m:mo>=</m:mo>
+                      <m:msub>
+                        <m:mi>X</m:mi>
+                        <m:msub>
+                          <m:mover accent="true">
+                            <m:mi>Λ</m:mi>
+                            <m:mo>˜</m:mo>
+                          </m:mover>
+                          <m:mi>T</m:mi>
+                        </m:msub>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:munder>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>m</m:mi>
+                          <m:mo>∈</m:mo>
+                          <m:msub>
+                            <m:mover accent="true">
+                              <m:mi>Λ</m:mi>
+                              <m:mo>˜</m:mo>
+                            </m:mover>
+                            <m:mi>T</m:mi>
+                          </m:msub>
+                        </m:mrow>
+                      </m:munder>
+                      <m:mo>〈</m:mo>
+                      <m:mi>X</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mo>〉</m:mo>
+                      <m:mspace width="0.166667em"/>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mspace width="0.166667em"/>
+                      <m:mspace width="1.em"/>
+                      <m:mtext>with</m:mtext>
+                      <m:mspace width="1.em"/>
+                      <m:msub>
+                        <m:mover accent="true">
+                          <m:mi>Λ</m:mi>
+                          <m:mo>˜</m:mo>
+                        </m:mover>
+                        <m:mi>T</m:mi>
+                      </m:msub>
+                      <m:mo>=</m:mo>
+                      <m:mrow>
+                        <m:mo>{</m:mo>
+                        <m:mi>m</m:mi>
+                        <m:mo>∈</m:mo>
+                        <m:mi>γ</m:mi>
+                        <m:mspace width="4pt"/>
+                        <m:mo>:</m:mo>
+                        <m:mspace width="4pt"/>
+                        <m:mo>|</m:mo>
+                        <m:mo>〈</m:mo>
+                        <m:mi>X</m:mi>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>m</m:mi>
+                      </m:msub>
+                      <m:mo>〉</m:mo>
+                      <m:mrow>
+                        <m:mo>|</m:mo>
+                        <m:mo>≥</m:mo>
+                        <m:mi>T</m:mi>
+                        <m:mo>}</m:mo>
+                      </m:mrow>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+<!--empty paragraphs get left behind.-->
+          <para id="id2265655">The set <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>Λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>T</m:mi></m:msub></m:math> is an estimate of an approximation support
+of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>. It is hopefully close to the optimal approximation support
+<m:math overflow="scroll"><m:mrow><m:msub><m:mi>λ</m:mi><m:mi>T</m:mi></m:msub><m:mo>=</m:mo><m:mrow><m:mo>{</m:mo><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>γ</m:mi><m:mspace width="3.33333pt"/><m:mo>:</m:mo><m:mspace width="3.33333pt"/><m:mo>|</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo></m:mrow><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>〉</m:mo><m:mrow><m:mo>|</m:mo><m:mo>≥</m:mo><m:mi>T</m:mi><m:mo>}</m:mo></m:mrow></m:mrow></m:math>.</para>
+          <para id="id2265766"><link target-id="uid34"/>(b) shows the estimated
+approximation set <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>T</m:mi></m:msub></m:math> of
+noisy-wavelet coefficients, <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo><m:mo>〈</m:mo><m:mi>X</m:mi><m:mo>,</m:mo></m:mrow><m:msub><m:mi>ψ</m:mi><m:mrow><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow></m:msub><m:mrow><m:mo>|</m:mo><m:mo>≥</m:mo><m:mi>T</m:mi></m:mrow></m:mrow></m:math>,
+that can be compared to the optimal approximation support <emphasis effect="italics">Λ<sub>T</sub></emphasis> shown
+in <link target-id=""/>(b).
+The estimation in <link target-id="uid34"/>(d) from wavelet coefficients
+in <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>T</m:mi></m:msub></m:math> has considerably reduced the noise in regular
+regions while keeping the sharpness of edges by preserving large-wavelet
+coefficients. This estimation is improved with a translation-invariant
+procedure that averages this estimator over several translated wavelet
+bases. Thresholding wavelet coefficients
+implements an adaptive
+smoothing, which averages the data <emphasis effect="italics">X</emphasis> with a kernel that depends
+on the estimated regularity of the original signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>.</para>
+          <para id="id2265910">Donoho and Johnstone proved that for
+Gaussian white noise of variance <emphasis effect="italics">σ<sup>2</sup></emphasis>,
+choosing <m:math overflow="scroll"><m:mrow><m:mi>T</m:mi><m:mo>=</m:mo><m:mi>σ</m:mi><m:msqrt><m:mrow><m:mn>2</m:mn><m:msub><m:mo form="prefix">log</m:mo><m:mi mathvariant="normal">e</m:mi></m:msub><m:mi>N</m:mi></m:mrow></m:msqrt></m:mrow></m:math> yields a risk
+<m:math overflow="scroll"><m:mrow><m:mi>E</m:mi><m:mo>{</m:mo><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>-</m:mo><m:mover accent="true"><m:mi>F</m:mi><m:mo>˜</m:mo></m:mover><m:msup><m:mo>∥</m:mo><m:mn>2</m:mn></m:msup><m:mo>}</m:mo></m:mrow></m:math> of the order of <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>-</m:mo></m:mrow><m:msub><m:mi>f</m:mi><m:msub><m:mi>Λ</m:mi><m:mi>T</m:mi></m:msub></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>,
+up to a <m:math overflow="scroll"><m:mrow><m:msub><m:mo form="prefix">log</m:mo><m:mi mathvariant="normal">e</m:mi></m:msub><m:mi>N</m:mi></m:mrow></m:math> factor.
+This spectacular result shows that the
+estimated support <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>T</m:mi></m:msub></m:math> does nearly as well as the
+optimal unknown support <emphasis effect="italics">λ<sub>T</sub></emphasis>. The resulting risk is small if
+the representation is sparse and precise.</para>
+          <para id="id2266107">The set <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>T</m:mi></m:msub></m:math> in <link target-id="uid34"/>(b) “looks” different
+from the <emphasis effect="italics">λ<sub>T</sub></emphasis> in <link target-id=""/>(b) because it has more
+isolated points. This indicates that some prior information on
+the geometry of <emphasis effect="italics">λ<sub>T</sub></emphasis> could be used to improve the estimation.
+For audio noise-reduction, thresholding estimators are
+applied in
+sparse representations provided by time-frequency bases.
+Similar isolated time-frequency coefficients
+produce a highly annoying “musical noise.”
+Musical noise is removed
+with a block thresholding that regularizes the geometry of the
+estimated support <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>T</m:mi></m:msub></m:math> and avoids leaving isolated points.
+Block thresholding also improves wavelet estimators.</para>
+          <para id="id2266206">If <emphasis effect="italics">W</emphasis> is a Gaussian noise and signals in <emphasis effect="italics">Θ</emphasis>
+have a sparse representation
+in <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math>, then Chapter 11 proves that
+thresholding estimators can produce a nearly minimax risk.
+In particular, wavelet thresholding estimators have a nearly
+minimax risk for large classes of piecewise smooth
+signals, including bounded variation images.</para>
+        </section>
+      </section>
+    
+  </content>
+</document>

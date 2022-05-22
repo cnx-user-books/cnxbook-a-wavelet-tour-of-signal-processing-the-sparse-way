@@ -1,0 +1,44 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Introduction to "A Wavelet tour of Signal Processing"</title>
+  <metadata>
+  <md:content-id>m23070</md:content-id><md:title>Introduction to "A Wavelet tour of Signal Processing"</md:title>
+  <md:abstract>This collection comprises Chapter 1 of the book
+    A Wavelet Tour of Signal Processing, The Sparse Way
+    (third edition, 2009) by Stéphane Mallat.  The book's
+    website at Academic Press is
+http://www.elsevier.com/wps/find/bookdescription.cws_home/714561/description#description
+    The book's complementary materials are available at
+http://wavelet-tour.com</md:abstract>
+  <md:uuid>5000316b-6adb-4f3f-ac22-e93608a0fe0c</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>Sparse Representations</title>
+      <para id="id2258270">Signals carry overwhelming amounts of data in which relevant information is often more difficult
+to find than a needle in a haystack. Processing is faster and simpler in a sparse representation
+where few coefficients reveal the information we are looking for. Such representations can be
+constructed by decomposing signals over elementary waveforms chosen in a family called a <emphasis effect="italics">dictionary</emphasis>. But the search for the Holy Grail of an ideal sparse transform adapted to all
+signals is a hopeless quest. The discovery of wavelet orthogonal bases and local time-frequency
+dictionaries has opened the door to a huge jungle of new transforms. Adapting sparse
+representations to signal properties, and deriving efficient processing operators, is therefore
+a necessary survival strategy.</para>
+      <para id="id2258935">An orthogonal basis is a dictionary of minimum size
+that can yield a sparse representation if designed
+to concentrate the signal energy over a set of few vectors.
+This set gives a geometric signal description.
+Efficient signal compression and noise-reduction algorithms are then
+implemented with diagonal operators computedwith fast algorithms.
+But this is not always optimal.</para>
+      <para id="id2258944">In natural languages, a richer dictionary helps to build shorter and more precise sentences.
+Similarly, dictionaries of vectors that are larger than bases are needed to build sparse
+representations of complex signals. But choosing is difficult and requires more complex
+algorithms. Sparse representations in redundant dictionaries can improve pattern recognition,
+compression, and noise reduction, but also the resolution of new inverse problems. This includes
+superresolution, source separation, and compressive sensing.</para>
+      <para id="id2258956">This first chapter is a sparse book representation,
+providing the story line and the main ideas. It gives a sense of
+orientation for choosing a path to travel.</para>
+    </section>
+  </content>
+</document>

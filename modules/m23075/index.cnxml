@@ -1,0 +1,95 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Travel Guide</title>
+  <metadata>
+  <md:content-id>m23075</md:content-id><md:title>Travel Guide</md:title>
+  <md:abstract>This collection comprises Chapter 1 of the book
+    A Wavelet Tour of Signal Processing, The Sparse Way
+    (third edition, 2009) by Stéphane Mallat.  The book's
+    website at Academic Press is
+http://www.elsevier.com/wps/find/bookdescription.cws_home/714561/description#description
+    The book's complementary materials are available at
+http://wavelet-tour.com</md:abstract>
+  <md:uuid>78d45ee4-1bc1-40d0-afdc-7c2a78d9ed89</md:uuid>
+</metadata>
+
+<content>
+    <section id="cid1">
+      <title>Travel Guide</title>
+      <section id="uid1">
+        <title>Reproducible Computational Science</title>
+        <para id="id2258277">This book covers the whole spectrum from theorems on
+functions of continuous variables to fast discrete algorithms
+and their applications.
+<link target-id=""/>
+argues that models based on continuous
+time functions give useful asymptotic results for understanding
+the behavior of discrete algorithms. Still,
+a mathematical analysis alone is often unable to fully predict
+the behavior and suitability of algorithms for
+specific signals.
+Experiments are necessary and such experiments
+should be reproducible, just like experiments in
+other fields of science (DonohoB:95).</para>
+        <para id="id2258936">The reproducibility of experiments requires having complete software and full source code for
+inspection, modification, and application under varied parameter settings. Following this
+perspective, computational algorithms presented in this book are available as MATLAB subroutines
+or in other software packages. Figures can be reproduced and the source code is available.
+Software demonstrations and selected exercise solutions are available at <emphasis effect="italics">http://wavelet-tour.com</emphasis>. For the instructor, solutions are available at
+<emphasis effect="italics">www.elsevierdirect.com/9780123743701</emphasis>.</para>
+      </section>
+      <section id="uid2">
+        <title>Book Road Map</title>
+        <para id="id2258976">Some redundancy is introduced between sections
+to avoid imposing a linear progression through the book.
+The preface describes several possible programs
+for a sparse signal-processing course.</para>
+        <para id="id2258983">All theorems are explained in the text and reading the proofs is
+not necessary to understand the results. Most of the book's
+theorems are proved in detail, and important techniques are
+included. Exercises at the end of each chapter give examples of
+mathematical, algorithmic, and numeric applications, ordered by
+level of difficulty from 1 to 4, and selected solutions can be
+found at <emphasis effect="italics">http://wavelet-tour.com</emphasis>.</para>
+        <para id="id2258998">The book begins with
+Chapters 2 and 3, which
+review the Fourier transform and linear discrete signal processing.
+They provide the necessary background for
+readers with no signal-processing background.
+Important properties of linear operators, projectors, and vector
+spaces can be found in the Appendix.
+Local time-frequency transforms and dictionaries
+are presented in Chapter 4; 
+the wavelet and windowed Fourier transforms are introduced and
+compared.
+The measurement of instantaneous frequencies
+illustrates the limitations of time-frequency resolution.
+Dictionary stability and redundancy are introduced in
+Chapter 5 through the frame theory, with examples
+of windowed Fourier, wavelet, and curvelet frames.
+Chapter 6 explains the relationship
+between wavelet coefficient amplitude
+and local signal regularity. It is applied to
+the detection of singularities and edges and to
+the analysis of multifractals.</para>
+        <para id="id2259032">Wavelet bases and fast filter bank algorithms are important tools
+presented in Chapter 7.
+An overdose of orthonormal bases can strike the reader while
+studying the construction and properties of
+wavelet packets and local cosine bases in
+Chapter 8. It is thus important to
+read Chapter 9,
+which describes sparse approximations in bases.
+Signal-compression and denoising applications
+described in Chapters 10 and 11
+give life to most
+theoretical and algorithmic results in the book.
+These chapters offer a practical perspective on the relevance of
+linear and nonlinear signal-processing algorithms.
+Chapter 12 introduces sparse decompositions in
+redundant dictionaries and their applications. The resolution of inverse problems
+is studied in Chapter 13, with super-resolution,
+compressive sensing, and source separation.</para>
+      </section>
+    </section>
+  </content>
+</document>

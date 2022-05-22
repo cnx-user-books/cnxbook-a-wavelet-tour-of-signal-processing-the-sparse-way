@@ -1,0 +1,767 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Computational Harmonic Analysis</title>
+  <metadata>
+  <md:content-id>m23069</md:content-id><md:title>Computational Harmonic Analysis</md:title>
+  <md:abstract>This collection comprises Chapter 1 of the book
+    A Wavelet Tour of Signal Processing, The Sparse Way
+    (third edition, 2009) by Stéphane Mallat.  The book's
+    website at Academic Press is
+http://www.elsevier.com/wps/find/bookdescription.cws_home/714561/description#description
+    The book's complementary materials are available at
+http://wavelet-tour.com</md:abstract>
+  <md:uuid>f45c6752-355e-4814-826b-b71de154b395</md:uuid>
+</metadata>
+
+<content>
+
+      <para id="id2258269">Fourier and wavelet bases are the journey's starting point. They decompose signals over oscillatory
+waveforms that reveal many signal properties and
+provide a path to sparse
+representations.
+Discretized signals often have a very large size <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>≥</m:mo><m:msup><m:mn>10</m:mn><m:mn>6</m:mn></m:msup></m:mrow></m:math>,
+and thus can only be processed by fast algorithms,
+typically implemented with <m:math overflow="scroll"><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:mo form="prefix">log</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math> operations and memories.
+Fourier and wavelet transforms illustrate the strong connection
+between well-structured mathematical tools andfast
+algorithms.</para>
+      <section id="uid1">
+        <title>The Fourier Kingdom</title>
+        <para id="id2258983">The Fourier transform is everywhere in
+physics and mathematics because it diagonalizes
+time-invariant convolution operators. It rules over
+linear time-invariant signal processing, the building blocks of which
+are <emphasis effect="italics">frequency filtering</emphasis> operators.</para>
+        <para id="id2258995">Fourier analysis represents
+any finite energy function <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math>
+as a sum of sinusoidal waves <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="normal">e</m:mi></m:mrow><m:mrow><m:mi>i</m:mi><m:mi>ω</m:mi><m:mi>t</m:mi></m:mrow></m:msup></m:math>:</para>
+        <equation id="uid2">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mo>=</m:mo>
+                    <m:mfrac>
+                      <m:mn>1</m:mn>
+                      <m:mrow>
+                        <m:mn>2</m:mn>
+                        <m:mi>π</m:mi>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:msubsup>
+                      <m:mo>∫</m:mo>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mspace width="0.166667em"/>
+                    <m:mover accent="true">
+                      <m:mi>f</m:mi>
+                      <m:mo>^</m:mo>
+                    </m:mover>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>ω</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:msup>
+                      <m:mrow>
+                        <m:mi mathvariant="normal">e</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mi>i</m:mi>
+                        <m:mi>ω</m:mi>
+                        <m:mi>t</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>ω</m:mi>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2259394"> 
+The amplitude <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> of each sinusoidal
+wave <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="normal">e</m:mi></m:mrow><m:mrow><m:mi>i</m:mi><m:mi>ω</m:mi><m:mi>t</m:mi></m:mrow></m:msup></m:math> is equal to its correlation with <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>,
+also called Fourier transform:</para>
+        <equation id="uid4">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mover accent="true">
+                      <m:mi>f</m:mi>
+                      <m:mo>^</m:mo>
+                    </m:mover>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>ω</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mo>=</m:mo>
+                    <m:msubsup>
+                      <m:mo>∫</m:mo>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:msup>
+                      <m:mrow>
+                        <m:mi mathvariant="normal">e</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>i</m:mi>
+                        <m:mi>ω</m:mi>
+                        <m:mi>t</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>t</m:mi>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2259563">
+The more regular <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math>, the faster the decay of the sinusoidal wave amplitude <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo><m:mspace width="0.166667em"/></m:mrow><m:mover accent="true"><m:mi>f</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow><m:mo>|</m:mo></m:mrow></m:mrow></m:math> when frequency <emphasis effect="italics">ω</emphasis> increases.</para>
+        <para id="id2259630">When <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> is defined only on an interval, say <m:math overflow="scroll"><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow></m:math>,
+then the Fourier transform
+becomes a decomposition in a Fourier orthonormal basis
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msup><m:mrow><m:mi mathvariant="normal">e</m:mi></m:mrow><m:mrow><m:mi>i</m:mi><m:mn>2</m:mn><m:mi>π</m:mi><m:mi>m</m:mi><m:mi>t</m:mi></m:mrow></m:msup><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">Z</m:mi></m:mrow></m:msub></m:math> of <m:math overflow="scroll"><m:mrow><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow></m:mrow></m:math>. If <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> is uniformly
+regular, then its Fourier transform
+coefficients also have a fast decay when the frequency <m:math overflow="scroll"><m:mrow><m:mn>2</m:mn><m:mi>π</m:mi><m:mi>m</m:mi></m:mrow></m:math> increases,
+so it can be easily approximated with few low-frequency
+Fourier coefficients. The Fourier transform therefore defines a
+sparse representation of uniformly regular functions.</para>
+        <para id="id2259796">Over discrete signals, the Fourier transform is a
+decomposition in a discrete orthogonal Fourier basis <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msup><m:mrow><m:mi mathvariant="normal">e</m:mi></m:mrow><m:mrow><m:mi>i</m:mi><m:mn>2</m:mn><m:mi>π</m:mi><m:mi>k</m:mi><m:mi>n</m:mi><m:mo>/</m:mo><m:mi>N</m:mi></m:mrow></m:msup><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:msub></m:math>
+of <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:math>, which has properties similar to a Fourier transform on functions. Its embedded
+structure leads to fast Fourier transform (FFT) algorithms, which compute discrete Fourier
+coefficients with <m:math overflow="scroll"><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:mo form="prefix">log</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math> instead of <emphasis effect="italics">N<sup>2</sup></emphasis>. This FFT algorithm is a cornerstone of
+discrete signal processing.</para>
+        <para id="id2259911">As long as we are satisfied with linear time-invariant operators
+or uniformly regular signals, the Fourier transform provides
+simple answers to most questions. Its richness makes it suitable
+for a wide range of applications such as signal transmissions or
+stationary signal processing. However, to represent a transient
+phenomenon—a word pronounced at a particular time, an apple
+located in the left corner of an image—the Fourier transform
+becomes a cumbersome tool that requires many coefficients to
+represent a localized event. Indeed, the support of <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="normal">e</m:mi></m:mrow><m:mrow><m:mi>i</m:mi><m:mi>ω</m:mi><m:mi>t</m:mi></m:mrow></m:msup></m:math> covers the whole real line, so <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> depends on the
+values <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> for all times <m:math overflow="scroll"><m:mrow><m:mi>t</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">R</m:mi></m:mrow></m:math>. This global “mix” of
+information makes it difficult to analyze or represent any local
+property of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> from <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>.</para>
+      </section>
+      <section id="uid5">
+        <title>Wavelet Bases</title>
+        <para id="id2260082">Wavelet bases, like Fourier bases, reveal the signal regularity
+through the amplitude of coefficients, and their structure leads
+to a fast computational algorithm. However, wavelets are
+well localized and few coefficients are needed to represent local
+transient structures. As opposed to a Fourier basis, a
+wavelet basis defines a sparse representation of piecewise regular
+signals, which may include transients and singularities. In
+images, large wavelet coefficients are located in the neighborhood
+of edges and irregular textures.</para>
+        <para id="id2260094">The story began in 1910, when Haar (Haar:10) constructed a
+piecewise constantfunction </para>
+        <equation id="id2260104">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>ψ</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>t</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:mfenced separators="" open="{" close="">
+                <m:mtable>
+                  <m:mtr>
+                    <m:mtd columnalign="right">
+                      <m:mrow>
+                        <m:mphantom>
+                          <m:mo>-</m:mo>
+                        </m:mphantom>
+                        <m:mn>1</m:mn>
+                      </m:mrow>
+                    </m:mtd>
+                    <m:mtd columnalign="right">
+                      <m:mrow>
+                        <m:mtext>if</m:mtext>
+                        <m:mspace width="4.pt"/>
+                        <m:mrow>
+                          <m:mn>0</m:mn>
+                          <m:mo>≤</m:mo>
+                          <m:mi>t</m:mi>
+                          <m:mo>&lt;</m:mo>
+                          <m:mn>1</m:mn>
+                          <m:mo>/</m:mo>
+                          <m:mn>2</m:mn>
+                        </m:mrow>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd columnalign="right">
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mn>1</m:mn>
+                      </m:mrow>
+                    </m:mtd>
+                    <m:mtd columnalign="right">
+                      <m:mrow>
+                        <m:mtext>if</m:mtext>
+                        <m:mspace width="4.pt"/>
+                        <m:mrow>
+                          <m:mn>1</m:mn>
+                          <m:mo>/</m:mo>
+                          <m:mn>2</m:mn>
+                          <m:mo>≤</m:mo>
+                          <m:mi>t</m:mi>
+                          <m:mo>&lt;</m:mo>
+                          <m:mn>1</m:mn>
+                        </m:mrow>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd columnalign="right">
+                      <m:mrow>
+                        <m:mphantom>
+                          <m:mo>-</m:mo>
+                        </m:mphantom>
+                        <m:mn>0</m:mn>
+                      </m:mrow>
+                    </m:mtd>
+                    <m:mtd columnalign="right">
+                      <m:mtext>otherwise</m:mtext>
+                    </m:mtd>
+                  </m:mtr>
+                </m:mtable>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2260221">the dilations and translations of which
+generate an orthonormal basis</para>
+        <equation id="id2260228">
+          <m:math overflow="scroll" mode="display">
+            <m:msub>
+              <m:mfenced separators="" open="{" close="}">
+                <m:msub>
+                  <m:mi>ψ</m:mi>
+                  <m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>j</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:mi>n</m:mi>
+                  </m:mrow>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>t</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mfrac>
+                  <m:mn>1</m:mn>
+                  <m:msqrt>
+                    <m:msup>
+                      <m:mn>2</m:mn>
+                      <m:mrow>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                  </m:msqrt>
+                </m:mfrac>
+                <m:mspace width="0.166667em"/>
+                <m:mi>ψ</m:mi>
+                <m:mspace width="-0.166667em"/>
+                <m:mfenced separators="" open="(" close=")">
+                  <m:mfrac>
+                    <m:mrow>
+                      <m:mi>t</m:mi>
+                      <m:mo>-</m:mo>
+                      <m:msup>
+                        <m:mn>2</m:mn>
+                        <m:mrow>
+                          <m:mspace width="0.166667em"/>
+                          <m:mi>j</m:mi>
+                        </m:mrow>
+                      </m:msup>
+                      <m:mi>n</m:mi>
+                    </m:mrow>
+                    <m:msup>
+                      <m:mn>2</m:mn>
+                      <m:mrow>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                  </m:mfrac>
+                </m:mfenced>
+              </m:mfenced>
+              <m:mrow>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>j</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>∈</m:mo>
+                <m:msup>
+                  <m:mi mathvariant="double-struck">Z</m:mi>
+                  <m:mn>2</m:mn>
+                </m:msup>
+              </m:mrow>
+            </m:msub>
+          </m:math>
+        </equation>
+        <para id="id2260364">of the space <m:math overflow="scroll"><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> of signals having a finite energy</para>
+        <equation id="id2260400">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>∥</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>f</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mo>=</m:mo>
+              <m:msubsup>
+                <m:mo>∫</m:mo>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+                <m:mrow>
+                  <m:mo>+</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+              </m:msubsup>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>|</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>f</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>t</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>t</m:mi>
+              <m:mo>&lt;</m:mo>
+              <m:mo>+</m:mo>
+              <m:mi>∞</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2260484">Let us write <m:math overflow="scroll"><m:mrow><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mspace width="-0.166667em"/><m:mo>,</m:mo><m:mi>g</m:mi><m:mo>〉</m:mo><m:mo>=</m:mo><m:msubsup><m:mo>∫</m:mo><m:mrow><m:mo>-</m:mo><m:mi>∞</m:mi></m:mrow><m:mrow><m:mo>+</m:mo><m:mi>∞</m:mi></m:mrow></m:msubsup><m:mi>f</m:mi><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow><m:mspace width="0.166667em"/><m:msup><m:mi>g</m:mi><m:mo>*</m:mo></m:msup><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow><m:mspace width="0.166667em"/><m:mi>d</m:mi><m:mi>t</m:mi></m:mrow></m:math>—the inner product in <m:math overflow="scroll"><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>.
+ Any finite energy signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> can thus be represented
+by its wavelet inner-product coefficients </para>
+        <equation id="id2260618">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mo>〈</m:mo>
+              <m:mspace width="2.0pt"/>
+              <m:mi>f</m:mi>
+              <m:mo>,</m:mo>
+              <m:msub>
+                <m:mi>ψ</m:mi>
+                <m:mrow>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>j</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>n</m:mi>
+                </m:mrow>
+              </m:msub>
+              <m:mo>〉</m:mo>
+              <m:mo>=</m:mo>
+              <m:msubsup>
+                <m:mo>∫</m:mo>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+                <m:mrow>
+                  <m:mo>+</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+              </m:msubsup>
+              <m:mi>f</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>t</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mspace width="0.166667em"/>
+              <m:msub>
+                <m:mi>ψ</m:mi>
+                <m:mrow>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>j</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>n</m:mi>
+                </m:mrow>
+              </m:msub>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>t</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>t</m:mi>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2260717">and recovered by summing them in this wavelet orthonormal basis:</para>
+        <equation id="uid9">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mi>f</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:munderover>
+                      <m:mo>∑</m:mo>
+                      <m:mrow>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:munderover>
+                    <m:munderover>
+                      <m:mo>∑</m:mo>
+                      <m:mrow>
+                        <m:mi>n</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:munderover>
+                    <m:mrow>
+                      <m:mo>〈</m:mo>
+                      <m:mspace width="2.0pt"/>
+                      <m:mi>f</m:mi>
+                      <m:mo>,</m:mo>
+                    </m:mrow>
+                    <m:msub>
+                      <m:mi>ψ</m:mi>
+                      <m:mrow>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>n</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mo>〉</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:msub>
+                      <m:mi>ψ</m:mi>
+                      <m:mrow>
+                        <m:mi>j</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>n</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2260841">Each Haar wavelet <m:math overflow="scroll"><m:mrow><m:msub><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow></m:msub><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> has a zero average over
+its support <m:math overflow="scroll"><m:mrow><m:mo>[</m:mo><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup><m:mi>n</m:mi><m:mo>,</m:mo><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup><m:mrow><m:mo>(</m:mo><m:mi>n</m:mi><m:mo>+</m:mo><m:mn>1</m:mn><m:mo>)</m:mo></m:mrow><m:mo>]</m:mo></m:mrow></m:math>.
+If <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> is locally regular and <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup></m:math> is small,
+then it is nearly constant over this interval and
+the wavelet coefficient <m:math overflow="scroll"><m:mrow><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow></m:msub><m:mo>〉</m:mo></m:mrow></m:math> is
+nearly zero. This means that large wavelet coefficients
+are located at sharp signal transitions only.</para>
+        <para id="id2260997">With a jump in time, the story continues in 1980, when Strömberg
+(Stromberg:81) found a piecewise linear function
+<emphasis effect="italics">ψ</emphasis> that also generates an orthonormal basis
+and gives better approximations of smooth functions.
+Meyer was not aware of this result, and
+motivated by the work of Morlet and Grossmann over continuous
+wavelet transform, he tried
+to prove that there exists
+no regular wavelet <emphasis effect="italics">ψ</emphasis> that generates an orthonormal
+basis. This attempt was a failure since he ended up constructing a
+whole family of orthonormal wavelet bases,
+with functions <emphasis effect="italics">ψ</emphasis>
+that are infinitely continuously differentiable (Meyer:86).
+This was the fundamental impulse that led to a widespread
+search for new orthonormal wavelet bases, which culminated
+in the celebrated Daubechies wavelets
+ of compact support
+(Daubechies:88).</para>
+        <para id="id2261047">The systematic theory for constructing orthonormal wavelet bases
+was established by Meyer and Mallat through
+the elaboration of
+multiresolution signal approximations (Mallat:89b), as presented in Chapter 7.
+It was inspired by original ideas developed in computer vision
+by Burt and Adelson (BurtA:83)
+to analyze images at several resolutions. Digging deeper into the properties
+of orthogonal wavelets
+and multiresolution approximations
+brought to light
+a surprising link with filter banks
+constructed with conjugate mirror filters,
+and a fast wavelet transform algorithm decomposing
+signals of size <emphasis effect="italics">N</emphasis> with <m:math overflow="scroll"><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math> operations (Mallat:89).</para>
+        <section id="uid11">
+          <title>Filter Banks</title>
+          <para id="id2261101">Motivated by speech compression, in 1976
+Croisier, Esteban, and Galand (CroisierEG:76) introduced
+an invertible
+filter bank, which decomposes
+a discrete signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> into two signals of half its size
+using a filtering and subsampling procedure. 
+They showed that <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> can be recovered
+from these subsampled signals by canceling
+the aliasing terms with a particular class of filters called
+<emphasis effect="italics">conjugate mirror filters</emphasis>.
+This breakthrough led to a 10-year research effort to build
+a complete filter bank theory. Necessary and sufficient
+conditions for decomposing a signal in subsampled
+components with a filtering scheme,
+and recovering the same signal with an inverse transform, were established by
+Smith and Barnwell (SmithB:84),
+Vaidyanathan (Vaidyanathan:87), andVetterli (Vetterli:86).</para>
+          <para id="id2261168">The multiresolution theory of Mallat (Mallat:89b) and Meyer
+(Meyer:92c) proves that any conjugate mirror filter
+characterizes a wavelet <emphasis effect="italics">ψ</emphasis> that generates an orthonormal
+basis of <m:math overflow="scroll"><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, and that a fast discrete wavelet transform is
+implemented by cascading these conjugate mirror filters
+(Mallat:89). The equivalence between this continuous time
+wavelet theory and discrete filter banks led to a new fruitful
+interface between digital signal processing and harmonic analysis,
+first creating a culture shock that is now well resolved.</para>
+        </section>
+        <section id="uid13">
+          <title>Continuous versus Discrete and Finite</title>
+          <para id="id2261226">Originally, many signal processing engineers were wondering
+what is the point of considering wavelets and signals as functions,
+since all computations are performed over
+discrete signals with conjugate mirror filters.
+Why bother with the convergence of infinite convolution
+cascades if in practice
+we only compute a finite number of convolutions?
+Answering these important questions is necessary in order
+to understand why this book alternates between theorems on
+continuous time functions and discrete algorithms applied to
+finite sequences.</para>
+          <para id="id2261239">A short answer would be “simplicity.”
+In <m:math overflow="scroll"><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, a wavelet basis is
+constructedby dilating and translating a single
+function <emphasis effect="italics">ψ</emphasis>.
+Several important theorems relate
+the amplitude of wavelet coefficients to the local regularity
+of the signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>.
+Dilations are not defined over discrete sequences, and
+discrete wavelet bases are therefore more complex to describe.
+The regularity of a discrete sequence is not well defined either, which
+makes it more difficult to interpret the amplitude of wavelet coefficients.
+A theory of
+continuous-time functions gives
+asymptotic results for discrete sequences with sampling
+intervals decreasing to zero. This theory is useful because
+these asymptotic results are precise enough to understand the
+behavior of discrete algorithms.</para>
+          <para id="id2261308">But continuous time or space models are not sufficient
+for elaborating discrete signal-processing algorithms.
+The transition between continuous and discrete signals must
+be done with great care to maintain important properties such as orthogonality.
+Restricting the constructions to finite discrete signals
+adds another layer of complexity because of border problems.
+How these border issues affect numerical implementations is
+carefully addressed once the properties of the bases are thoroughly
+understood.</para>
+        </section>
+        <section id="uid14">
+          <title>Wavelets for Images</title>
+          <para id="id2261338">Wavelet orthonormal bases of images can be constructed
+from wavelet orthonormal bases of one-dimensional signals.
+Three mother wavelets
+<m:math overflow="scroll"><m:mrow><m:msup><m:mi>ψ</m:mi><m:mn>1</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, <m:math overflow="scroll"><m:mrow><m:msup><m:mi>ψ</m:mi><m:mn>2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, and <m:math overflow="scroll"><m:mrow><m:msup><m:mi>ψ</m:mi><m:mn>3</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>,
+with <m:math overflow="scroll"><m:mrow><m:mi>x</m:mi><m:mo>=</m:mo><m:mrow><m:mo>(</m:mo><m:msub><m:mi>x</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>x</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow><m:mo>∈</m:mo><m:msup><m:mrow><m:mi mathvariant="double-struck">R</m:mi></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>,
+are dilated by <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup></m:math>
+and translated by <m:math overflow="scroll"><m:mrow><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup><m:mi>n</m:mi></m:mrow></m:math> with <m:math overflow="scroll"><m:mrow><m:mi>n</m:mi><m:mo>=</m:mo><m:mrow><m:mo>(</m:mo><m:msub><m:mi>n</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>n</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow><m:mo>∈</m:mo><m:msup><m:mrow><m:mi mathvariant="double-struck">Z</m:mi></m:mrow><m:mn>2</m:mn></m:msup></m:mrow></m:math>.
+This yields an orthonormal basis
+of the space <m:math overflow="scroll"><m:mrow><m:msup><m:mi mathvariant="bold">L</m:mi><m:mn mathvariant="bold">2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:msup><m:mrow><m:mi mathvariant="double-struck">R</m:mi></m:mrow><m:mn>2</m:mn></m:msup><m:mo>)</m:mo></m:mrow></m:mrow></m:math> of finite energy functions <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow><m:mo>=</m:mo><m:mi>f</m:mi><m:mrow><m:mo>(</m:mo><m:msub><m:mi>x</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>x</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow></m:mrow></m:math>:</para>
+          <equation id="id2261636">
+            <m:math overflow="scroll" mode="display">
+              <m:msub>
+                <m:mfenced separators="" open="{" close="}">
+                  <m:msubsup>
+                    <m:mi>ψ</m:mi>
+                    <m:mrow>
+                      <m:mspace width="0.166667em"/>
+                      <m:mi>j</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:mi>n</m:mi>
+                    </m:mrow>
+                    <m:mi>k</m:mi>
+                  </m:msubsup>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>x</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>=</m:mo>
+                  <m:mfrac>
+                    <m:mn>1</m:mn>
+                    <m:msup>
+                      <m:mn>2</m:mn>
+                      <m:mrow>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>j</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                  </m:mfrac>
+                  <m:msup>
+                    <m:mi>ψ</m:mi>
+                    <m:mi>k</m:mi>
+                  </m:msup>
+                  <m:mspace width="-0.166667em"/>
+                  <m:mfenced separators="" open="(" close=")">
+                    <m:mfrac>
+                      <m:mrow>
+                        <m:mi>x</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:msup>
+                          <m:mn>2</m:mn>
+                          <m:mrow>
+                            <m:mspace width="0.166667em"/>
+                            <m:mi>j</m:mi>
+                          </m:mrow>
+                        </m:msup>
+                        <m:mi>n</m:mi>
+                      </m:mrow>
+                      <m:msup>
+                        <m:mn>2</m:mn>
+                        <m:mrow>
+                          <m:mspace width="0.166667em"/>
+                          <m:mi>j</m:mi>
+                        </m:mrow>
+                      </m:msup>
+                    </m:mfrac>
+                  </m:mfenced>
+                </m:mfenced>
+                <m:mrow>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>j</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:mi mathvariant="double-struck">Z</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:msup>
+                    <m:mrow>
+                      <m:mi mathvariant="double-struck">Z</m:mi>
+                    </m:mrow>
+                    <m:mn>2</m:mn>
+                  </m:msup>
+                  <m:mo>,</m:mo>
+                  <m:mn>1</m:mn>
+                  <m:mo>≤</m:mo>
+                  <m:mi>k</m:mi>
+                  <m:mo>≤</m:mo>
+                  <m:mn>3</m:mn>
+                </m:mrow>
+              </m:msub>
+            </m:math>
+          </equation>
+          <para id="id2261796">The support of a wavelet <m:math overflow="scroll"><m:msubsup><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow><m:mi>k</m:mi></m:msubsup></m:math> is a square
+of width proportional to the scale <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.277778em"/><m:mspace width="0.222222em"/><m:mi>j</m:mi></m:mrow></m:msup></m:math>.Two-dimensional wavelet bases are discretized to define
+orthonormal bases of images including <emphasis effect="italics">N</emphasis> pixels.
+Wavelet coefficients are calculated with the fast <m:math overflow="scroll"><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math>
+algorithm described in Chapter 7.</para>
+          <para id="id2261882">Like in one dimension,
+a wavelet coefficient <m:math overflow="scroll"><m:mrow><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msubsup><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow><m:mi>k</m:mi></m:msubsup><m:mo>〉</m:mo></m:mrow></m:math> has
+a small amplitude if <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>)</m:mo></m:mrow></m:math> is regular over the
+support of <m:math overflow="scroll"><m:msubsup><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow><m:mi>k</m:mi></m:msubsup></m:math>.
+It has a large amplitude near sharp transi-tions such as edges.
+Figure (b) is the array of <emphasis effect="italics">N</emphasis> wavelet coefficients.
+Each direction <emphasis effect="italics">k</emphasis> and scale <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup></m:math> corresponds to a
+subimage, which shows in black the position of the largest coefficients
+above a threshold: <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo></m:mrow><m:msubsup><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow><m:mi>k</m:mi></m:msubsup><m:mrow><m:mo>〉</m:mo><m:mo>|</m:mo><m:mo>≥</m:mo><m:mi>T</m:mi></m:mrow></m:mrow></m:math>.</para>
+          <figure id="uid15">
+            <media id="uid15_media" alt="">
+              <image mime-type="image/png" src="../../media/newfig1.png" id="uid15_onlineimage" width="568"><!-- NOTE: attribute width changes image size online (pixels). original width is 568. --></image>
+              <image for="pdf" mime-type="application/postscript" src="../../media/newfig1-9567.eps" id="uid15_printimage"/>
+            </media>
+            <caption><emphasis effect="bold">(a)</emphasis> Discrete image <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>[</m:mo><m:mi>n</m:mi><m:mo>]</m:mo></m:mrow></m:math> of <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>=</m:mo><m:msup><m:mn>256</m:mn><m:mn>2</m:mn></m:msup></m:mrow></m:math> pixels.
+<emphasis effect="bold">(b)</emphasis> Array of <emphasis effect="italics">N</emphasis> orthogonal wavelet coefficients
+<m:math overflow="scroll"><m:mrow><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msubsup><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow><m:mi>k</m:mi></m:msubsup><m:mo>〉</m:mo></m:mrow></m:math> for <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>=</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mo>,</m:mo><m:mn>3</m:mn></m:mrow></m:math>, and 4 scales <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup></m:math>;
+black points correspond to <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>|</m:mo><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo></m:mrow><m:msubsup><m:mi>ψ</m:mi><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow><m:mi>k</m:mi></m:msubsup><m:mrow><m:mo>〉</m:mo><m:mo>|</m:mo><m:mo>&gt;</m:mo><m:mi>T</m:mi></m:mrow></m:mrow></m:math>.
+<emphasis effect="bold">(c)</emphasis> Linear approximation from the <m:math overflow="scroll"><m:mrow><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:math> wavelet coefficients
+at the three largest scales.
+<emphasis effect="bold">(d)</emphasis> Nonlinear approximation from the <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>16</m:mn></m:mrow></m:math>
+wavelet coefficients of largest amplitude shown in (b).</caption>
+          </figure>
+        </section>
+      </section>
+   
+  </content>
+</document>

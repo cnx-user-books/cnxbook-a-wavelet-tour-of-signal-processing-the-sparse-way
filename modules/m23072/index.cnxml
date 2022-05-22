@@ -1,0 +1,236 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Preface to "A Wavelet tour of Signal Processing"</title>
+  <metadata>
+  <md:content-id>m23072</md:content-id><md:title>Preface to "A Wavelet tour of Signal Processing"</md:title>
+  <md:abstract/>
+  <md:uuid>ba31a1a4-a069-413b-a861-e022e19d9df4</md:uuid>
+</metadata>
+
+<content>
+    <note id="eip-89">Additional figures, numerical and programming tools as well as exercises for this book may be found at <link url="http://www.wavelet-tour.com/">http://www.wavelet-tour.com/
+</link>.</note><section id="cid1">
+      <title>Preface to the Sparse Edition</title>
+      <para id="id2258269">I can not help but find striking resemblances between scientific
+communities and schools
+of fish. We interact in conferences and through articles,
+we move together while a global
+trajectory emerges from individual contributions.
+Some of us like to be at the center of the school,
+others prefer to wander around, and few swim in
+multiple directions in front.
+To avoid dying by starvation in
+a progressively narrower and specialized domain,
+a scientific community needs to move on.
+Computational harmonic analysis is still well alive
+because it went beyond wavelets. Writing such a book is about
+decoding the trajectory of the school, and gathering the pearls that have
+been uncovered on the way.
+Wavelets are not any more the central topic, despite the original title.
+It is just an important tool, as the Fourier transform is.
+Sparse representation and processing are now at the core.</para>
+      <para id="id2258272">In the 80's, many researchers
+were focused on building time-frequency decompositions, trying to avoid
+the uncertainty barrier, and hoping to discover
+the ultimate representation.
+Along the way came the construction of wavelet orthogonal
+bases, which opened new perspectives through collaborations with physicists
+and mathematicians.
+Designing orthogonal bases with Xlets became a popular sport, with
+compression and noise reduction applications.
+Connections with approximations and sparsity also became more apparent.
+The search for sparsity has taken over, leading to new grounds,
+where orthonormal bases are replaced by redundant dictionaries
+of waveforms. Geometry is now also becoming more apparent through sparse
+approximation supports in dictionaries.</para>
+      <para id="id2258275">During these last 7 years, I also encountered the industrial world.
+With a lot of naiveness, some bandlets and more
+mathematics, we created a start-up
+with Christophe Bernard, Jérome Kalifa and Erwan Le Pennec.
+It took us some time to learn
+that in 3 months good engineering should produce
+robust algorithms that operate
+in real time, as opposed to the 3 years we were
+used to have for writing new ideas with promissing perspectives.
+Yet, we survived because mathematics is
+a major source of industrial innovations for signal processing.
+Semi-conductor technology offers amazing
+computational power and flexibility.
+However, ad-hoc algorithms often do not scale easily and
+mathematics accelerates
+the trial and error development process. Sparsity
+decreases computations, memory and data
+communications. Although it brings beauty,
+mathematical understanding is not a luxury.
+It is required by increasingly
+sophisticated information processing devices.</para>
+      <section id="uid1">
+        <title>New Additions</title>
+        <para id="id2258975">Putting sparsity at the center of the book implied rewriting many parts
+and adding sections. Chapter 12 and
+Chapter 13 are new. They introduce
+sparse representations in redundant dictionaries, and inverse
+problems, super-resolution and compressive sensing. Here is
+a small catalogue of new elements in this third edition.</para>
+        <para id="id2258988"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Radon transform and tomography.</para>
+        <para id="id2259000"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Lifting for wavelets on surfaces, bounded domains and fast
+computations.</para>
+        <para id="id2259013"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> JPEG-2000 image compression.</para>
+        <para id="id2259026"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Block thresholding for denoising.</para>
+        <para id="id2259040"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Geometric representations with
+adaptive triangulations, curvelets and bandlets.</para>
+        <para id="id2259054"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Sparse approximations in redundant dictionaries with
+pursuits algorithms.</para>
+        <para id="id2259068"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Noise reduction with model selection, in redundant dictionaries.</para>
+        <para id="id2259082"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Exact recovery of sparse approximation supports in dictionaries.</para>
+        <para id="id2259096"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Multichannel signal representations and processing.</para>
+        <para id="id2259109"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Dictionary learning.</para>
+        <para id="id2259123"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Inverse problems and super-resolution.</para>
+        <para id="id2259135"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compressive sensing.</para>
+        <para id="id2259149"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Source separation.</para>
+      </section>
+      <section id="uid2">
+        <title>Teaching</title>
+        <para id="id2259171">This book is intended as a graduate textbook.
+Its evolution is also the result of
+teaching courses in electrical engineering and applied mathematics.
+A new web site
+provides softwares for reproducible experimentations, exercise solutions,
+together with teaching material such as slides with figures, and
+Matlab softwares for numerical classes: <emphasis effect="italics">http://wavelet-tour.com</emphasis>.</para>
+        <para id="id2259188">More exercises have been added at the end of each chapter, ordered
+by level of difficulty.
+Level<emphasis effect="italics"><sup>1</sup></emphasis> exercises are direct applications of the course.
+Level<emphasis effect="italics"><sup>2</sup></emphasis> requires more thinking.
+Level<emphasis effect="italics"><sup>3</sup></emphasis> includes some technical derivations.
+Level<emphasis effect="italics"><sup>4</sup></emphasis> are projects at the interface of research, that are
+possible topics for a final course project or an independent study.
+More exercises and projects can be found in the web site.</para>
+      </section>
+      <section id="uid3"><title>Sparse Course Programs</title><para id="id2259268">The Fourier transform and analog to digital conversion through
+linear sampling approximations provide a common ground for all courses
+(Chapters 2 and 3).
+It introduces basic signal representations, and reviews important
+mathematical and algorithmic tools needed afterwards.
+Many trajectories are then possible to explore and teach sparse
+signal processing.
+The following list gives several topics that can orient the course
+structure, with elements that can be covered along the way.</para>
+        <para id="id2259283">
+          <emphasis effect="italics">Sparse representations with bases and applications</emphasis>
+        </para>
+        <para id="id2259293"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Principles of linear and non-linear approximations in
+bases (Chapter 9).</para>
+        <para id="id2259309"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Lipschitz regularity and wavelet coefficients decay
+(Chapter 6).</para>
+        <para id="id2259325"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Wavelet bases
+(Chapter 7).</para>
+        <para id="id2259340"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Properties of linear and non-linear wavelet basis approximations
+(Chapter 9).</para>
+        <para id="id2259356"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Image wavelet compression
+(Chapter 10).</para>
+        <para id="id2259371"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Linear and non-linear diagonal denoising
+(Chapter 11).</para>
+        <para id="id2259388">
+          <emphasis effect="italics">Sparse time-frequency representations</emphasis>
+        </para>
+        <para id="id2259396"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Time-frequency wavelet and windowed Fourier
+ridges for audio processing (Chapter 4).</para>
+        <para id="id2259413"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Local cosine bases
+(Chapter 8).</para>
+        <para id="id2259428"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Linear and non-linear approximations in bases
+(Chapter 9).</para>
+        <para id="id2259444"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Audio compression
+(Chapter 10).</para>
+        <para id="id2259460"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Audio denoising and block thresholding
+(Chapter 11).</para>
+        <para id="id2259475"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compression and denoising in redundant time-frequency
+dictionaries, with best bases or pursuit algorithms
+(Chapter 12).</para>
+        <para id="id2259492">
+          <emphasis effect="italics">Sparse signal estimation</emphasis>
+        </para>
+        <para id="id2259501"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Bayes versus minimax, and linear versus non-linear estimations
+(Chapter 11).</para>
+        <para id="id2259517"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Wavelet bases
+(Chapter 7).</para>
+        <para id="id2259533"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Linear and non-linear approximations in bases
+(Chapter 9).</para>
+        <para id="id2259548"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Thresholding estimation
+(Chapter 11).</para>
+        <para id="id2259563"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Minimax optimality
+(Chapter 11).</para>
+        <para id="id2259580"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Model selection for denoising in redundant dictionaries
+(Chapter 12).</para>
+        <para id="id2259596"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compressive sensing
+(Chapter 13).</para>
+        <para id="id2259611">
+          <emphasis effect="italics">Sparse compression and information theory</emphasis>
+        </para>
+        <para id="id2259619"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Wavelet orthonormal bases
+(Chapter 7).</para>
+        <para id="id2259635"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Linear and non-linear approximations in bases
+(Chapter 9).</para>
+        <para id="id2259652"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compression and sparse transform codes in bases
+(Chapter 10).</para>
+        <para id="id2259667"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compression in redundant dictionaries
+(Chapter 12).</para>
+        <para id="id2259683"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compressive sensing
+(Chapter 13).</para>
+        <para id="id2259699"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Source separation
+(Chapter 13).</para>
+        <para id="id2259714">
+          <emphasis effect="italics">Dictionary representations and inverse problems</emphasis>
+        </para>
+        <para id="id2259723"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Frames and Riesz bases
+(Chapter 5).</para>
+        <para id="id2259739"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Linear and non-linear approximations in bases
+(Chapter 9).</para>
+        <para id="id2259755"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Ideal redundant dictionary approximations
+(Chapter 12).</para>
+        <para id="id2259770"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Pursuit algorithms and dictionary incoherence
+(Chapter 12).</para>
+        <para id="id2259786"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Linear and thresholding inverse estimators
+(Chapter 13).</para>
+        <para id="id2259802"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Super-resolution and source separation
+(Chapter 13).</para>
+        <para id="id2259818"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Compressive sensing
+(Chapter 13).</para>
+        <para id="id2259833">
+          <emphasis effect="italics">Geometric sparse processing</emphasis>
+        </para>
+        <para id="id2259842"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Time-frequency spectral lines and ridges
+(Chapter 4).</para>
+        <para id="id2259858"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Frames and Riesz bases
+(Chapter 5).</para>
+        <para id="id2259873"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Multiscale edge representations with wavelet maxima
+(Chapter 6).</para>
+        <para id="id2259889"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Sparse approximation supports in bases
+(Chapter 9).</para>
+        <para id="id2259905"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Approximations with geometric regularity, curvelets
+and bandlets (Chapters 9 and 12).</para>
+        <para id="id2259924"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Sparse signal compression and geometric bit budget
+(Chapters 10 and 12).</para>
+        <para id="id2259942"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Exact recovery of sparse approximation supports
+(Chapter 12).</para>
+        <para id="id2259958"><m:math overflow="scroll"><m:mo>•</m:mo></m:math> Super-resolution
+(Chapter 13).</para>
+      </section>
+      <section id="uid4">
+        <title>Acknowledgments</title>
+        <para id="id2259982">Some things do not change with new editions, in particular the
+traces left by the ones that were, and remain important references for me.
+As always, I am deeply grateful to Ruzena Bajcsy and Yves Meyer.</para>
+        <para id="id2259991">I spent the last few years, with three brilliant and kind colleagues,
+Christophe Bernard, Jérome Kalifa,
+and Erwan Le Pennec, in a pressure cooker called a start-up.
+Pressure means stress, despite very good moments.
+The resulting sauce was a blend of what all of us could provide, and which
+brought new flavors to our personalities. I am thankful to them for the
+ones I got, some of which I am still discovering.</para>
+        <para id="id2260007">This new edition is the result of a collaboration with Gabriel Peyré,
+who made these changes not only possible, but also very interesting to do.
+I thank him for his remarkable work and help.</para>
+      </section>
+    </section>
+  </content>
+</document>

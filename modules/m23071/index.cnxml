@@ -1,0 +1,724 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+
+<title>Inverse Problems</title>
+<metadata>
+  <md:content-id>m23071</md:content-id><md:title>Inverse Problems</md:title>
+  <md:abstract>This collection comprises Chapter 1 of the book
+    A Wavelet Tour of Signal Processing, The Sparse Way
+    (third edition, 2009) by Stéphane Mallat.  The book's
+    website at Academic Press is
+http://www.elsevier.com/wps/find/bookdescription.cws_home/714561/description#description
+    The book's complementary materials are available at
+http://wavelet-tour.com</md:abstract>
+  <md:uuid>ad099e95-d1e1-4fc4-9e68-aac49cf8cee4</md:uuid>
+</metadata>
+
+<content>
+      <para id="id2262965">Most digital measurement devices, such as cameras, microphones, or medical imaging
+systems, can be modeled as a linear transformation of
+an incoming analog signal, plus noise due to intrinsic measurement fluctuations or
+to electronic noises. This linear transformation
+can be decomposed into a stable analog-to-digital linear conversion followed
+by a discrete operator <emphasis effect="italics">U</emphasis> that carries the specific transfer function of the
+measurement device. The resulting measured data can bewritten</para>
+      <equation id="id2262987">
+        <m:math overflow="scroll" mode="display">
+          <m:mrow>
+            <m:mi>Y</m:mi>
+            <m:mo>[</m:mo>
+            <m:mi>q</m:mi>
+            <m:mo>]</m:mo>
+            <m:mo>=</m:mo>
+            <m:mi>U</m:mi>
+            <m:mi>f</m:mi>
+            <m:mo>[</m:mo>
+            <m:mi>q</m:mi>
+            <m:mo>]</m:mo>
+            <m:mo>+</m:mo>
+            <m:mi>W</m:mi>
+            <m:mo>[</m:mo>
+            <m:mi>q</m:mi>
+            <m:mo>]</m:mo>
+            <m:mo>,</m:mo>
+          </m:mrow>
+        </m:math>
+      </equation>
+      <para id="id2263031">where <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:mrow></m:math> is the high-resolution signal we want to
+recover, and <m:math overflow="scroll"><m:mrow><m:mi>W</m:mi><m:mo>[</m:mo><m:mi>q</m:mi><m:mo>]</m:mo></m:mrow></m:math> is the measurement noise. For a camera with an
+optic that is out of focus, the operator <emphasis effect="italics">U</emphasis> is a low-pass
+convolution producing a blur. For a magnetic resonance imaging
+system, <emphasis effect="italics">U</emphasis> is a Radon transform integrating the signal along rays
+and the number <emphasis effect="italics">Q</emphasis> of measurements is smaller than <emphasis effect="italics">N</emphasis>. In such
+problems, <emphasis effect="italics">U</emphasis> is not invertible and recovering an estimate of
+<m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> is an <emphasis effect="italics">ill-posed</emphasis> inverse problem.</para>
+      <para id="id2263150">Inverse problems are among the most difficult signal-processing problems
+with considerable applications.
+When data acquisition is difficult, costly, or dangerous, or when the signal
+is degraded, super-resolution is
+important to recover the highest possible resolution
+information. This applies to satellite observations,
+seismic exploration, medical imaging, radar, camera phones, or degraded
+Internet videos displayed on high-resolution screens.
+Separating mixed information sources from fewer measurements is yet another
+super-resolution problem in telecommunication or audio recognition.</para>
+      <para id="id2263163">Incoherence, sparsity, and geometry play a crucial role in the solution
+of ill-defined inverse problems. With a sensing matrix <emphasis effect="italics">U</emphasis>
+with random coefficients,
+Candès and Tao (candes-near-optimal)
+and Donoho (donoho-cs) proved
+that super-resolution becomes stable for signals having a sufficiently
+sparse representation in a dictionary. This remarkable result opens
+the door to new compression sensing devices and algorithms
+that recover high-resolution signals from a
+few randomized linear measurements.</para>
+      <section id="uid26">
+        <title>Diagonal Inverse Estimation</title>
+        <para id="id2263199">In an ill-posed inverse problem,</para>
+        <equation id="id2263202">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>Y</m:mi>
+              <m:mo>=</m:mo>
+              <m:mi>U</m:mi>
+              <m:mi>f</m:mi>
+              <m:mo>+</m:mo>
+              <m:mi>W</m:mi>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2263225">the image space <m:math overflow="scroll"><m:mrow><m:mi mathvariant="bold">ImU</m:mi><m:mo>=</m:mo><m:mo>{</m:mo><m:mi>U</m:mi><m:mi>h</m:mi><m:mspace width="3.33333pt"/><m:mo>:</m:mo><m:mspace width="3.33333pt"/><m:mi>h</m:mi><m:mo>∈</m:mo><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup><m:mo>}</m:mo></m:mrow></m:math> of <emphasis effect="italics">U</emphasis>
+is of dimension <emphasis effect="italics">Q</emphasis> smaller than the
+high-resolution space <emphasis effect="italics">N</emphasis> where <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> belongs.
+Inverse problems include two difficulties. In the image
+space <emphasis effect="bold">ImU</emphasis>, where <emphasis effect="italics">U</emphasis> is invertible, its inverse
+may amplify the noise <emphasis effect="italics">W</emphasis>, which then needs to be reduced
+by an efficient denoising procedure. In the null space <emphasis effect="bold">NullU</emphasis>,
+all signals <emphasis effect="italics">h</emphasis> are set to zero <m:math overflow="scroll"><m:mrow><m:mi>U</m:mi><m:mi>h</m:mi><m:mo>=</m:mo><m:mn>0</m:mn></m:mrow></m:math> and thus disappear in the measured
+data <emphasis effect="italics">Y</emphasis>. Recovering the projection of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> in <emphasis effect="bold">NullU</emphasis>
+requires using some strong prior information.
+A super-resolution estimator recovers an estimation of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>
+in a dimension space larger than <emphasis effect="italics">Q</emphasis> and hopefully equal to <emphasis effect="italics">N</emphasis>, but
+this is not alwayspossible.</para>
+        <section id="uid27">
+          <title>Singular Value Decompositions</title>
+          <para id="id2263463">Let <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>=</m:mo><m:msub><m:mo>∑</m:mo><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub><m:mi>a</m:mi><m:mrow><m:mo>[</m:mo><m:mi>m</m:mi><m:mo>]</m:mo></m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub></m:mrow></m:math> be the representation of
+<m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> in an orthonormal basis <m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">B</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math>.
+An approximation must be recovered from</para>
+<!--empty paragraphs get left behind.-->
+          <equation id="id2263574">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mi>Y</m:mi>
+                <m:mo>=</m:mo>
+                <m:munder>
+                  <m:mo>∑</m:mo>
+                  <m:mrow>
+                    <m:mi>m</m:mi>
+                    <m:mo>∈</m:mo>
+                    <m:mi>Γ</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mi>a</m:mi>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>m</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:mi>U</m:mi>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>m</m:mi>
+                </m:msub>
+                <m:mo>+</m:mo>
+                <m:mi>W</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2263631">A basis  <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math> of singular vectors diagonalizes <m:math overflow="scroll"><m:mrow><m:msup><m:mi>U</m:mi><m:mo>*</m:mo></m:msup><m:mi>U</m:mi></m:mrow></m:math>.  Then
+<emphasis effect="italics">U</emphasis> transforms a subset of <emphasis effect="italics">Q</emphasis> vectors <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>Γ</m:mi><m:mi>Q</m:mi></m:msub></m:mrow></m:msub></m:math> of <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math> into
+an orthogonal basis <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>Γ</m:mi><m:mi>Q</m:mi></m:msub></m:mrow></m:msub></m:math> of <emphasis effect="bold">ImU</emphasis> and sets
+all other vectors to zero. A singular value decomposition estimates the coefficients
+<m:math overflow="scroll"><m:mrow><m:mi>a</m:mi><m:mo>[</m:mo><m:mi>m</m:mi><m:mo>]</m:mo></m:mrow></m:math> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> by projecting <emphasis effect="italics">Y</emphasis> on this singular basis and by
+renormalizing the resultingcoefficients</para>
+<!--empty paragraphs get left behind.-->
+          <equation id="id2263837">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mo>∀</m:mo>
+                <m:mi>m</m:mi>
+                <m:mo>∈</m:mo>
+                <m:mi>γ</m:mi>
+                <m:mo>,</m:mo>
+                <m:mspace width="1.em"/>
+                <m:mover accent="true">
+                  <m:mi>a</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>m</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mfrac>
+                  <m:mrow>
+                    <m:mo>〈</m:mo>
+                    <m:mi>Y</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:mi>U</m:mi>
+                    <m:msub>
+                      <m:mi>g</m:mi>
+                      <m:mi>m</m:mi>
+                    </m:msub>
+                    <m:mo>〉</m:mo>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mrow>
+                      <m:mo>∥</m:mo>
+                      <m:mi>U</m:mi>
+                    </m:mrow>
+                    <m:msub>
+                      <m:mi>g</m:mi>
+                      <m:mi>m</m:mi>
+                    </m:msub>
+                    <m:msup>
+                      <m:mrow>
+                        <m:mo>∥</m:mo>
+                      </m:mrow>
+                      <m:mn>2</m:mn>
+                    </m:msup>
+                    <m:mo>+</m:mo>
+                    <m:msubsup>
+                      <m:mi>h</m:mi>
+                      <m:mi>m</m:mi>
+                      <m:mn>2</m:mn>
+                    </m:msubsup>
+                  </m:mrow>
+                </m:mfrac>
+                <m:mo>,</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2263940">where <emphasis effect="italics">h<sub>m</sub><sup>2</sup></emphasis> are regularization parameters.</para>
+          <para id="id2263964">Such estimators recover nonzero coefficients in a space of dimension
+<emphasis effect="italics">Q</emphasis> and thus bring no super-resolution.
+If <emphasis effect="italics">U</emphasis> is a convolution operator, then <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math> is the Fourier basis and
+a singular value estimation
+implements a regularized inverseconvolution.</para>
+        </section>
+        <section id="uid29">
+          <title>Diagonal Thresholding Estimation</title>
+          <para id="id2264010">The basis that diagonalizes <m:math overflow="scroll"><m:mrow><m:msup><m:mi>U</m:mi><m:mo>*</m:mo></m:msup><m:mi>U</m:mi></m:mrow></m:math> rarely provides a
+sparse signal representation.
+For example,
+a Fourier basis that diagonalizes convolution operators does not
+efficiently approximate signals including singularities.
+
+</para>
+          <para id="id2264047">Donoho (Donoho:95) introduced more flexibility by
+looking for a basis <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math> providing
+a sparse signal representation, where a subset of
+<emphasis effect="italics">Q</emphasis> vectors <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>Γ</m:mi><m:mi>Q</m:mi></m:msub></m:mrow></m:msub></m:math> are transformed by <emphasis effect="italics">U</emphasis> in
+a Riesz basis <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>Γ</m:mi><m:mi>Q</m:mi></m:msub></m:mrow></m:msub></m:math> of <emphasis effect="bold">ImU</emphasis>, while the
+others are set to zero. With an appropriate renormalization,
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msubsup><m:mover accent="true"><m:mi>λ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>m</m:mi><m:mrow><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msubsup><m:mspace width="0.166667em"/><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>Γ</m:mi><m:mi>Q</m:mi></m:msub></m:mrow></m:msub></m:math> has a biorthogonal basis
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:msub><m:mi>Γ</m:mi><m:mi>Q</m:mi></m:msub></m:mrow></m:msub></m:math> that is normalized <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo></m:mrow><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>˜</m:mo></m:mover><m:mi>m</m:mi></m:msub><m:mrow><m:mo>∥</m:mo><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow></m:mrow></m:math>.
+The sparse coefficients of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> in
+<m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math> can then be estimated with a thresholding</para>
+          <equation id="id2264337">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mo>∀</m:mo>
+                <m:mi>m</m:mi>
+                <m:mo>∈</m:mo>
+                <m:msub>
+                  <m:mi>γ</m:mi>
+                  <m:mi>Q</m:mi>
+                </m:msub>
+                <m:mo>,</m:mo>
+                <m:mspace width="1.em"/>
+                <m:mover accent="true">
+                  <m:mi>a</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>m</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:msub>
+                  <m:mi>ρ</m:mi>
+                  <m:msub>
+                    <m:mi>T</m:mi>
+                    <m:mi>m</m:mi>
+                  </m:msub>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:msubsup>
+                    <m:mover accent="true">
+                      <m:mi>λ</m:mi>
+                      <m:mo>˜</m:mo>
+                    </m:mover>
+                    <m:mi>m</m:mi>
+                    <m:mrow>
+                      <m:mo>-</m:mo>
+                      <m:mn>1</m:mn>
+                    </m:mrow>
+                  </m:msubsup>
+                  <m:mo>〈</m:mo>
+                  <m:mi>Y</m:mi>
+                  <m:mspace width="-0.166667em"/>
+                  <m:mo>,</m:mo>
+                  <m:msub>
+                    <m:mover accent="true">
+                      <m:mi>φ</m:mi>
+                      <m:mo>˜</m:mo>
+                    </m:mover>
+                    <m:mi>m</m:mi>
+                  </m:msub>
+                  <m:mo>〉</m:mo>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mspace width="1.em"/>
+                <m:mtext>with</m:mtext>
+                <m:mspace width="4pt"/>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mi>ρ</m:mi>
+                  <m:mi>T</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mi>x</m:mi>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mn>1</m:mn>
+                  <m:mrow>
+                    <m:mo>|</m:mo>
+                    <m:mi>x</m:mi>
+                    <m:mo>|</m:mo>
+                    <m:mo>&gt;</m:mo>
+                    <m:mi>T</m:mi>
+                  </m:mrow>
+                </m:msub>
+                <m:mo>,</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2264507">for thresholds <emphasis effect="italics">T<sub>m</sub></emphasis> appropriately defined.</para>
+          <para id="id2264528">For classes of signals that are sparse in <m:math overflow="scroll"><m:mi mathvariant="script">B</m:mi></m:math>, such
+thresholding estimators may
+yield a nearly minimax risk, but they provide no super-resolution
+since this nonlinear projector remains in a space of dimension <emphasis effect="italics">Q</emphasis>.
+This result applies to classes of convolution operators <emphasis effect="italics">U</emphasis> in wavelet or wavelet
+packet bases. Diagonal inverse estimators are computationally efficient and
+potentially optimal in cases where super-resolution is not possible.</para>
+        </section>
+      </section>
+      <section id="uid32">
+        <title>Super-resolution and Compressive Sensing</title>
+        <para id="id2264577">Suppose that <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> has a sparse representation in some dictionary
+<m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">D</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>p</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math> of <emphasis effect="italics">P</emphasis> normalized vectors.
+The <emphasis effect="italics">P</emphasis> vectors of the transformed
+dictionary <m:math overflow="scroll"><m:mrow><m:msub><m:mi mathvariant="script">D</m:mi><m:mi>U</m:mi></m:msub><m:mo>=</m:mo><m:mi>U</m:mi><m:mi mathvariant="script">D</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>p</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math> belong to the space
+<emphasis effect="bold">ImU</emphasis> of dimension <m:math overflow="scroll"><m:mrow><m:mi>Q</m:mi><m:mo>&lt;</m:mo><m:mi>P</m:mi></m:mrow></m:math> and thus define a redundant dictionary.
+Vectors in the approximation support <emphasis effect="italics">λ</emphasis> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> are not restricted
+a priori to a particular subspace of <m:math overflow="scroll"><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:math>.
+Super-resolution is possible if the approximation support <emphasis effect="italics">λ</emphasis>
+of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> in <m:math overflow="scroll"><m:mi mathvariant="script">D</m:mi></m:math> can be
+estimated by decomposing the noisy data <emphasis effect="italics">Y</emphasis> over <emphasis effect="italics">D<sub>U</sub></emphasis>.
+It depends
+on the properties of the approximation support <emphasis effect="italics">λ</emphasis> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>
+in <emphasis effect="italics">γ</emphasis>. </para>
+        <section id="uid34">
+          <title>Geometric Conditions for Super-resolution</title>
+          <para id="id2264887">Let <m:math overflow="scroll"><m:mrow><m:msub><m:mi>w</m:mi><m:mi>λ</m:mi></m:msub><m:mo>=</m:mo><m:mi>f</m:mi><m:mo>-</m:mo><m:msub><m:mi>f</m:mi><m:mi>λ</m:mi></m:msub></m:mrow></m:math> be the approximation error of
+a sparse representation <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>λ</m:mi></m:msub><m:mo>=</m:mo><m:msub><m:mo>∑</m:mo><m:mrow><m:mi>p</m:mi><m:mo>∈</m:mo><m:mi>λ</m:mi></m:mrow></m:msub><m:mi>a</m:mi><m:mrow><m:mo>[</m:mo><m:mspace width="0.166667em"/><m:mi>p</m:mi><m:mo>]</m:mo></m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub></m:mrow></m:math> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math>.
+The observed signal can be written as</para>
+          <equation id="id2264995"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mi>Y</m:mi>
+                <m:mo>=</m:mo>
+                <m:mi>U</m:mi>
+                <m:mi>f</m:mi>
+                <m:mo>+</m:mo>
+                <m:mi>W</m:mi>
+                <m:mo>=</m:mo>
+                <m:munder>
+<m:mrow>
+                  <m:mo>∑</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>p</m:mi>
+                    <m:mo>∈</m:mo>
+                    <m:mi>λ</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mi>a</m:mi>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>p</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:mi>U</m:mi>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+                <m:mo>+</m:mo>
+                <m:mi>U</m:mi>
+                <m:msub>
+                  <m:mi>w</m:mi>
+                  <m:mi>λ</m:mi>
+                </m:msub>
+                <m:mo>+</m:mo>
+                <m:mi>W</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2265078">If the support <emphasis effect="italics">λ</emphasis> can be identified by finding a sparse
+approximation of <emphasis effect="italics">Y</emphasis> in <emphasis effect="italics">D<sub>U</sub></emphasis></para>
+          <equation id="id2265119"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mi>Y</m:mi>
+                  <m:mi>λ</m:mi>
+                </m:msub>
+                <m:mo>=</m:mo>
+                <m:munder>
+<m:mrow>
+                  <m:mo>∑</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>p</m:mi>
+                    <m:mo>∈</m:mo>
+                    <m:mi>λ</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mover accent="true">
+                  <m:mi>a</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>p</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:mi>U</m:mi>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+                <m:mo>,</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2265187">then we can recover a super-resolution estimation of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math></para>
+          <equation id="id2265206"><m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:mover accent="true">
+                  <m:mi>F</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mo>=</m:mo>
+                <m:munder>
+<m:mrow>
+                  <m:mo>∑</m:mo>
+</m:mrow>        
+          <m:mrow>
+                    <m:mi>p</m:mi>
+                    <m:mo>∈</m:mo>
+                    <m:mi>λ</m:mi>
+                  </m:mrow>
+                </m:munder>
+                <m:mover accent="true">
+                  <m:mi>a</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mspace width="0.166667em"/>
+                  <m:mi>p</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mi>g</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2265273">This shows that super-resolution is possible if the approximation
+support <emphasis effect="italics">λ</emphasis> can be identified by decomposing <emphasis effect="italics">Y</emphasis>
+in the redundant transformed dictionary <emphasis effect="italics">D<sub>U</sub></emphasis>.
+If the exact recovery criteria is satisfy <m:math overflow="scroll"><m:mrow><m:mi>E</m:mi><m:mi>R</m:mi><m:mi>C</m:mi><m:mo>(</m:mo><m:mi>λ</m:mi><m:mo>)</m:mo><m:mo>&lt;</m:mo><m:mn>1</m:mn></m:mrow></m:math> and if
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>p</m:mi><m:mo>∈</m:mo><m:mi>Λ</m:mi></m:mrow></m:msub></m:math> is a Riesz basis, then
+<emphasis effect="italics">λ</emphasis> can be recovered using pursuit algorithms
+with controlled error bounds.</para>
+          <para id="id2265387">For most operator <emphasis effect="italics">U</emphasis>, not all sparse approximation sets can be recovered. It is
+necessary to impose some further geometric conditions on <emphasis effect="italics">λ</emphasis>
+in <emphasis effect="italics">γ</emphasis>, which makes super-resolution difficult and often unstable.
+Numerical applications to sparse spike deconvolution, tomography, super-resolution
+zooming, and inpainting illustrate these results.</para>
+        </section>
+        <section id="uid35">
+          <title>Compressive Sensing with Randomness</title>
+          <para id="id2265441">Candès and Tao (candes-near-optimal), and Donoho (donoho-cs) proved
+that stable super-resolution is possible for any
+sufficiently sparse signal <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> if
+<emphasis effect="italics">U</emphasis> is an operator with random coefficients.
+Compressive sensing then becomes
+possible by recovering a close approximation of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mrow><m:mi mathvariant="double-struck">C</m:mi></m:mrow><m:mi>N</m:mi></m:msup></m:mrow></m:math> from
+<m:math overflow="scroll"><m:mrow><m:mi>Q</m:mi><m:mo>≪</m:mo><m:mi>N</m:mi></m:mrow></m:math> linear measurements (candes-cs-review).</para>
+          <para id="id2265515">A recovery is stable for a sparse approximation
+set <m:math overflow="scroll"><m:mrow><m:mo>|</m:mo><m:mi>λ</m:mi><m:mo>|</m:mo><m:mo>≤</m:mo><m:mi>M</m:mi></m:mrow></m:math> only if the corresponding dictionary family
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Λ</m:mi></m:mrow></m:msub></m:math> is a Riesz basis of the space it generates.
+The <emphasis effect="italics">M-restricted isometry conditions</emphasis>
+of Candès, Tao, and Donoho (donoho-cs) imposes uniform Riesz bounds
+for all sets <m:math overflow="scroll"><m:mrow><m:mi>λ</m:mi><m:mo>⊂</m:mo><m:mi>γ</m:mi></m:mrow></m:math> with <m:math overflow="scroll"><m:mrow><m:mo>|</m:mo><m:mi>λ</m:mi><m:mo>|</m:mo><m:mo>≤</m:mo><m:mi>M</m:mi></m:mrow></m:math>:</para>
+          <equation id="uid37">
+            <m:math overflow="scroll" mode="display">
+              <m:mtable displaystyle="true">
+                <m:mtr>
+                  <m:mtd columnalign="right">
+                    <m:mrow>
+                      <m:mo>∀</m:mo>
+                      <m:mi>c</m:mi>
+                      <m:mo>∈</m:mo>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mi mathvariant="double-struck">C</m:mi>
+                        </m:mrow>
+                        <m:mrow>
+                          <m:mo>|</m:mo>
+                          <m:mi>λ</m:mi>
+                          <m:mo>|</m:mo>
+                        </m:mrow>
+                      </m:msup>
+                      <m:mo>,</m:mo>
+                      <m:mspace width="5.0pt"/>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:mn>1</m:mn>
+                        <m:mo>-</m:mo>
+                        <m:msub>
+                          <m:mi>δ</m:mi>
+                          <m:mi>M</m:mi>
+                        </m:msub>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mspace width="0.166667em"/>
+                          <m:mo>∥</m:mo>
+                          <m:mi>c</m:mi>
+                          <m:mo>∥</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mrow>
+                        <m:mo>≤</m:mo>
+                        <m:mo>∥</m:mo>
+                      </m:mrow>
+                      <m:munder>
+                        <m:mo>∑</m:mo>
+                        <m:mrow>
+                          <m:mi>m</m:mi>
+                          <m:mo>∈</m:mo>
+                          <m:mi>λ</m:mi>
+                        </m:mrow>
+                      </m:munder>
+                      <m:mi>c</m:mi>
+                      <m:mrow>
+                        <m:mo>[</m:mo>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>p</m:mi>
+                        <m:mo>]</m:mo>
+                      </m:mrow>
+                      <m:mspace width="0.166667em"/>
+                      <m:mi>U</m:mi>
+                      <m:msub>
+                        <m:mi>g</m:mi>
+                        <m:mi>p</m:mi>
+                      </m:msub>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mo>∥</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mo>≤</m:mo>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:mn>1</m:mn>
+                        <m:mo>+</m:mo>
+                        <m:msub>
+                          <m:mi>δ</m:mi>
+                          <m:mi>M</m:mi>
+                        </m:msub>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                      <m:mspace width="0.166667em"/>
+                      <m:msup>
+                        <m:mrow>
+                          <m:mo>∥</m:mo>
+                          <m:mi>c</m:mi>
+                          <m:mo>∥</m:mo>
+                        </m:mrow>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mo>.</m:mo>
+                    </m:mrow>
+                  </m:mtd>
+                </m:mtr>
+              </m:mtable>
+            </m:math>
+          </equation>
+          <para id="id2265795">
+This is a strong incoherence condition on the <emphasis effect="italics">P</emphasis> vectors
+of <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mi>U</m:mi><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:math>, which supposes that any subset of less than <emphasis effect="italics">M</emphasis>
+vectors is nearly uniformly
+distributed on the unit sphere of <emphasis effect="bold">ImU</emphasis>.</para>
+          <para id="id2265866">For an orthogonal basis <m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">D</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>g</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>m</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math>,
+this is possible for <m:math overflow="scroll"><m:mrow><m:mi>M</m:mi><m:mo>≤</m:mo><m:mi>C</m:mi><m:mspace width="0.166667em"/><m:mi>Q</m:mi><m:msup><m:mrow><m:mo>(</m:mo><m:mo form="prefix">log</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow><m:mrow><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msup></m:mrow></m:math>
+if <emphasis effect="italics">U</emphasis> is a matrix with independent Gaussian random coefficients.
+A pursuit algorithm then
+provides a stable approximation of
+any <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mi>C</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math> having a sparse approximation from
+vectors in <m:math overflow="scroll"><m:mi mathvariant="script">D</m:mi></m:math>.</para>
+          <para id="id2265996">These results open a new compressive-sensing approach to signal
+acquisition and representation.
+Instead of first discretizing linearly the signal at a high-resolution
+<emphasis effect="italics">N</emphasis> and then computing a nonlinear representation over <emphasis effect="italics">M</emphasis> coefficients
+in some dictionary, compressive-sensing measures directly <emphasis effect="italics">M</emphasis>
+randomized linear coefficients.
+A reconstructed signal is then recovered by a nonlinear
+algorithm, producing an error that can be of the same order of magnitude
+as the error obtained by the more classic two-step approximation process,
+with a more economic acquisiton process.
+These results remain valid for several types of random matrices <emphasis effect="italics">U</emphasis>.
+Examples of applications to single-pixel cameras,
+video super-resolution, new analog-to-digital converters, and MRI imaging
+are described.</para>
+        </section>
+        <section id="uid38">
+          <title>Blind Source Separation</title>
+          <para id="id2266064">Sparsity in redundant dictionaries also provides efficient strategies
+to separate a family of signals <m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>s</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>s</m:mi><m:mo>&lt;</m:mo><m:mi>S</m:mi></m:mrow></m:msub></m:math> that are
+linearly mixed in <m:math overflow="scroll"><m:mrow><m:mi>K</m:mi><m:mo>≤</m:mo><m:mi>S</m:mi></m:mrow></m:math> observed signals with noise:</para>
+          <equation id="id2266125">
+            <m:math overflow="scroll" mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mi>Y</m:mi>
+                  <m:mi>k</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:munderover>
+                  <m:mo>∑</m:mo>
+                  <m:mrow>
+                    <m:mi>s</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mn>0</m:mn>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:mi>S</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mn>1</m:mn>
+                  </m:mrow>
+                </m:munderover>
+                <m:msub>
+                  <m:mi>u</m:mi>
+                  <m:mrow>
+                    <m:mi>k</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:mi>s</m:mi>
+                  </m:mrow>
+                </m:msub>
+                <m:mspace width="0.166667em"/>
+                <m:msub>
+                  <m:mi>f</m:mi>
+                  <m:mi>s</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mo>+</m:mo>
+                <m:msub>
+                  <m:mi>W</m:mi>
+                  <m:mi>k</m:mi>
+                </m:msub>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>n</m:mi>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mspace width="1.em"/>
+                <m:mtext>for</m:mtext>
+                <m:mspace width="5.0pt"/>
+                <m:mn>0</m:mn>
+                <m:mo>≤</m:mo>
+                <m:mi>n</m:mi>
+                <m:mspace width="0.166667em"/>
+                <m:mo>&lt;</m:mo>
+                <m:mspace width="0.166667em"/>
+                <m:mi>N</m:mi>
+                <m:mspace width="1.em"/>
+                <m:mtext>and</m:mtext>
+                <m:mspace width="5.0pt"/>
+                <m:mn>0</m:mn>
+                <m:mo>≤</m:mo>
+                <m:mi>k</m:mi>
+                <m:mo>&lt;</m:mo>
+                <m:mi>K</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          <para id="id2266271">From a stereo recording, separating the sounds of <emphasis effect="italics">S</emphasis> musical instruments
+is an example of source separation with <m:math overflow="scroll"><m:mrow><m:mi>k</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math>. Most often the mixing matrix <m:math overflow="scroll"><m:mrow><m:mi>U</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>u</m:mi><m:mrow><m:mi>k</m:mi><m:mo>,</m:mo><m:mi>s</m:mi></m:mrow></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>k</m:mi><m:mo>&lt;</m:mo><m:mi>K</m:mi><m:mo>,</m:mo><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>s</m:mi><m:mo>&lt;</m:mo><m:mi>S</m:mi></m:mrow></m:msub></m:mrow></m:math>
+is unknown.
+Source separation is a super-resolution problem since
+<m:math overflow="scroll"><m:mrow><m:mi>S</m:mi><m:mspace width="0.166667em"/><m:mi>N</m:mi></m:mrow></m:math> data values must be recovered
+from <m:math overflow="scroll"><m:mrow><m:mi>Q</m:mi><m:mo>=</m:mo><m:mi>K</m:mi><m:mspace width="0.166667em"/><m:mi>N</m:mi><m:mo>≤</m:mo><m:mi>S</m:mi><m:mspace width="0.166667em"/><m:mi>N</m:mi></m:mrow></m:math> measurements. Not knowing
+the operator <emphasis effect="italics">U</emphasis> makes it even more complicated.</para>
+          <para id="id2266420">If each source <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>s</m:mi></m:msub></m:mrow></m:math> has a sparse approximation
+support <emphasis effect="italics">λ<sub>s</sub></emphasis> in a dictionary <m:math overflow="scroll"><m:mi mathvariant="script">D</m:mi></m:math>, with
+<m:math overflow="scroll"><m:mrow><m:msubsup><m:mo>∑</m:mo><m:mrow><m:mi>s</m:mi><m:mo>=</m:mo><m:mn>0</m:mn></m:mrow><m:mrow><m:mi>S</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msubsup><m:mrow><m:mo>|</m:mo><m:msub><m:mi>λ</m:mi><m:mi>s</m:mi></m:msub><m:mo>|</m:mo></m:mrow><m:mo>≪</m:mo><m:mi>N</m:mi></m:mrow></m:math>,
+then it is likely that the sets
+<m:math overflow="scroll"><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>λ</m:mi><m:mi>s</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mn>0</m:mn><m:mo>≤</m:mo><m:mi>s</m:mi><m:mo>&lt;</m:mo><m:mi>s</m:mi></m:mrow></m:msub></m:math> are nearly disjoint.
+In this case,
+the operator <emphasis effect="italics">U</emphasis>, the supports <emphasis effect="italics">λ<sub>s</sub></emphasis>, and the sources <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:msub><m:mi>f</m:mi><m:mi>s</m:mi></m:msub></m:mrow></m:math>
+are approximated by computing sparse
+approximations of the observed data <emphasis effect="italics">Y<sub>k</sub></emphasis> in <m:math overflow="scroll"><m:mi mathvariant="script">D</m:mi></m:math>. The distribution
+of these coefficients identifies the coefficients of the mixing
+matrix <emphasis effect="italics">U</emphasis> and the nearly disjoint source supports.
+Time-frequency separation of sounds illustrate these results.</para>
+        </section>
+      </section>
+
+</content>
+
+</document>

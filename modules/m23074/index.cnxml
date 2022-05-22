@@ -1,0 +1,974 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Time-Frequency Dictionaries</title>
+  <metadata>
+  <md:content-id>m23074</md:content-id><md:title>Time-Frequency Dictionaries</md:title>
+  <md:abstract>This collection comprises Chapter 1 of the book
+    A Wavelet Tour of Signal Processing, The Sparse Way
+    (third edition, 2009) by Stéphane Mallat.  The book's
+    website at Academic Press is
+http://www.elsevier.com/wps/find/bookdescription.cws_home/714561/description#description
+    The book's complementary materials are available at
+http://wavelet-tour.com</md:abstract>
+  <md:uuid>4a47d3df-bfe5-428c-8bb6-e5b738077caa</md:uuid>
+</metadata>
+
+<content>
+      <para id="id2258270">Motivated by quantum mechanics, in 1946 the physicist
+Gabor (Gabor:46) 
+proposed decomposing signals over dictionaries of
+elementary waveforms which he called
+time-frequency atoms 
+that have a minimal spread in a 
+time-frequency plane.
+By showing that such decompositions
+are closely related to our perception of sounds, and that they exhibit
+important structures in speech and music recordings,
+Gabor demonstrated the importance
+of localized time-frequency signal processing.
+Beyond sounds, large classes of signals have sparse decompositions as sums
+of time-frequency atoms selected from appropriate dictionaries.
+The key issue is to understand
+how to construct dictionaries with time-frequency atoms
+adapted to signal properties.</para>
+      <section id="uid5">
+        <title>Heisenberg Uncertainty</title>
+        <figure id="uid7">
+          <media id="uid7_media" alt="">
+            <image mime-type="image/png" src="../../media/newfig3.png" id="uid7_onlineimage" width="270"><!-- NOTE: attribute width changes image size online (pixels). original width is 270. --></image>
+            <image for="pdf" mime-type="application/postscript" src="../../media/newfig3-b459.eps" id="uid7_printimage"/>
+          </media>
+          <caption>Heisenberg box representing an atom <emphasis effect="italics">φ<sub>γ</sub></emphasis>.</caption>
+        </figure>
+        <para id="id2258992">A time-frequency dictionary
+<m:math overflow="scroll"><m:mrow><m:mi mathvariant="script">D</m:mi><m:mo>=</m:mo><m:msub><m:mrow><m:mo>{</m:mo><m:msub><m:mi>φ</m:mi><m:mi>γ</m:mi></m:msub><m:mo>}</m:mo></m:mrow><m:mrow><m:mi>γ</m:mi><m:mo>∈</m:mo><m:mi>Γ</m:mi></m:mrow></m:msub></m:mrow></m:math> is composed of waveforms of unit norm <m:math overflow="scroll"><m:mrow><m:mrow><m:mo>∥</m:mo></m:mrow><m:msub><m:mi>φ</m:mi><m:mi>γ</m:mi></m:msub><m:mrow><m:mo>∥</m:mo><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow></m:mrow></m:math>,
+which have a narrow localization in time and frequency.
+The time localization <emphasis effect="italics">u</emphasis> of <emphasis effect="italics">φ<sub>γ</sub></emphasis> and its spread around <emphasis effect="italics">u</emphasis>, are defined
+by</para>
+        <equation id="id2259096">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mrow>
+                <m:mi>u</m:mi>
+                <m:mo>=</m:mo>
+                <m:mo>∫</m:mo>
+                <m:mi>t</m:mi>
+                <m:mo>|</m:mo>
+              </m:mrow>
+              <m:msub>
+                <m:mi>φ</m:mi>
+                <m:mi>γ</m:mi>
+              </m:msub>
+              <m:msup>
+                <m:mrow>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>t</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>t</m:mi>
+              <m:mspace width="1.em"/>
+              <m:mtext>and</m:mtext>
+              <m:mspace width="1.em"/>
+              <m:msubsup>
+                <m:mi>σ</m:mi>
+                <m:mrow>
+                  <m:mi>t</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>γ</m:mi>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msubsup>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>∫</m:mo>
+                  <m:mo>|</m:mo>
+                  <m:mi>t</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>u</m:mi>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>|</m:mo>
+                  <m:msub>
+                    <m:mi>φ</m:mi>
+                    <m:mi>γ</m:mi>
+                  </m:msub>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>t</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>t</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2259473">Similarly, the frequency localization and spread of <m:math overflow="scroll"><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>^</m:mo></m:mover><m:mi>γ</m:mi></m:msub></m:math>
+are defined by</para>
+        <equation id="id2259498">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi>ξ</m:mi>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mn>2</m:mn>
+                  <m:mi>π</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:msup>
+              <m:mrow>
+                <m:mspace width="0.166667em"/>
+                <m:mo>∫</m:mo>
+                <m:mi>ω</m:mi>
+                <m:mo>|</m:mo>
+              </m:mrow>
+              <m:msub>
+                <m:mover accent="true">
+                  <m:mi>φ</m:mi>
+                  <m:mo>^</m:mo>
+                </m:mover>
+                <m:mi>γ</m:mi>
+              </m:msub>
+              <m:msup>
+                <m:mrow>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>ω</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>ω</m:mi>
+              <m:mspace width="1.em"/>
+              <m:mtext>and</m:mtext>
+              <m:mspace width="1.em"/>
+              <m:msubsup>
+                <m:mi>σ</m:mi>
+                <m:mrow>
+                  <m:mi>ω</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>γ</m:mi>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msubsup>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mn>2</m:mn>
+                  <m:mi>π</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:msup>
+              <m:msup>
+                <m:mrow>
+                  <m:mspace width="0.166667em"/>
+                  <m:mo>∫</m:mo>
+                  <m:mo>|</m:mo>
+                  <m:mi>ω</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>ξ</m:mi>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>|</m:mo>
+                  <m:msub>
+                    <m:mover accent="true">
+                      <m:mi>φ</m:mi>
+                      <m:mo>^</m:mo>
+                    </m:mover>
+                    <m:mi>γ</m:mi>
+                  </m:msub>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>ω</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>|</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>ω</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2259688">The Fourier Parseval formula</para>
+        <equation id="uid8">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mo>〈</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>f</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:msub>
+                      <m:mi>φ</m:mi>
+                      <m:mi>γ</m:mi>
+                    </m:msub>
+                    <m:mo>〉</m:mo>
+                    <m:mo>=</m:mo>
+                    <m:msubsup>
+                      <m:mo>∫</m:mo>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:msubsup>
+                      <m:mi>φ</m:mi>
+                      <m:mi>γ</m:mi>
+                      <m:mo>*</m:mo>
+                    </m:msubsup>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>t</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:mfrac>
+                      <m:mn>1</m:mn>
+                      <m:mrow>
+                        <m:mn>2</m:mn>
+                        <m:mi>π</m:mi>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mspace width="0.166667em"/>
+                    <m:msubsup>
+                      <m:mo>∫</m:mo>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mspace width="0.166667em"/>
+                    <m:mover accent="true">
+                      <m:mi>f</m:mi>
+                      <m:mo>^</m:mo>
+                    </m:mover>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>ω</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:msubsup>
+                      <m:mover accent="true">
+                        <m:mi>φ</m:mi>
+                        <m:mo>^</m:mo>
+                      </m:mover>
+                      <m:mi>γ</m:mi>
+                      <m:mo>*</m:mo>
+                    </m:msubsup>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>ω</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>ω</m:mi>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2259877">
+shows that <m:math overflow="scroll"><m:mrow><m:mo>〈</m:mo><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>,</m:mo><m:msub><m:mi>φ</m:mi><m:mi>γ</m:mi></m:msub><m:mo>〉</m:mo></m:mrow></m:math> depends mostly on the values
+<m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mover accent="true"><m:mi>f</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, where <m:math overflow="scroll"><m:mrow><m:msub><m:mi>φ</m:mi><m:mi>γ</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> and <m:math overflow="scroll"><m:mrow><m:msub><m:mover accent="true"><m:mi>φ</m:mi><m:mo>^</m:mo></m:mover><m:mi>γ</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>
+are nonnegligible ,
+and hence for <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>,</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:math> in a rectangle centered at <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi><m:mo>)</m:mo></m:mrow></m:math>, of size
+<m:math overflow="scroll"><m:mrow><m:msub><m:mi>σ</m:mi><m:mrow><m:mi>t</m:mi><m:mo>,</m:mo><m:mi>γ</m:mi></m:mrow></m:msub><m:mspace width="0.45pt"/><m:mo>×</m:mo><m:msub><m:mi>σ</m:mi><m:mrow><m:mi>ω</m:mi><m:mo>,</m:mo><m:mi>γ</m:mi></m:mrow></m:msub></m:mrow></m:math>. This rectangle is illustrated by
+<link target-id="uid7"/> in this time-frequency plane <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>,</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:math>.
+It can be interpreted
+as a “quantum of information” over an elementary resolution cell.
+The uncertainty principle theorem  proves
+(see Chapter 2) that
+this rectangle has a minimum surface that limits the
+joint time-frequency resolution:</para>
+        <equation id="uid10">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:msub>
+                      <m:mi>σ</m:mi>
+                      <m:mrow>
+                        <m:mi>t</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>γ</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mspace width="0.166667em"/>
+                    <m:msub>
+                      <m:mi>σ</m:mi>
+                      <m:mrow>
+                        <m:mi>ω</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>γ</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mo>≥</m:mo>
+                    <m:mfrac>
+                      <m:mn>1</m:mn>
+                      <m:mn>2</m:mn>
+                    </m:mfrac>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2260180">Constructing a dictionary of time-frequency atoms can thus be thought of as
+covering the time-frequency plane with resolution cells having a time
+width <m:math overflow="scroll"><m:msub><m:mi>σ</m:mi><m:mrow><m:mi>t</m:mi><m:mo>,</m:mo><m:mi>γ</m:mi></m:mrow></m:msub></m:math> anda frequency width <m:math overflow="scroll"><m:msub><m:mi>σ</m:mi><m:mrow><m:mi>ω</m:mi><m:mo>,</m:mo><m:mi>γ</m:mi></m:mrow></m:msub></m:math>
+which may vary but with a surface larger than one-half.
+Windowed Fourier and wavelet transforms are two important examples.</para>
+        
+      </section>
+      <section id="uid11">
+        <title>Windowed Fourier Transform</title>
+        <para id="id2260248">A windowed Fourier dictionary is constructed by translating
+in time and frequency a time window <m:math overflow="scroll"><m:mrow><m:mi>g</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:math>, of unit norm <m:math overflow="scroll"><m:mrow><m:mo>∥</m:mo><m:mi>g</m:mi><m:mo>∥</m:mo><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow></m:math>,
+centered at <m:math overflow="scroll"><m:mrow><m:mi>t</m:mi><m:mo>=</m:mo><m:mn>0</m:mn></m:mrow></m:math>:</para>
+        <equation id="id2260301">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:mi mathvariant="script">D</m:mi>
+              <m:mo>=</m:mo>
+              <m:msub>
+                <m:mfenced separators="" open="{" close="}">
+                  <m:msub>
+                    <m:mi>g</m:mi>
+                    <m:mrow>
+                      <m:mi>u</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:mi>ξ</m:mi>
+                    </m:mrow>
+                  </m:msub>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>t</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>=</m:mo>
+                  <m:mi>g</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>t</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mi>u</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mspace width="0.166667em"/>
+                  <m:msup>
+                    <m:mrow>
+                      <m:mi mathvariant="normal">e</m:mi>
+                    </m:mrow>
+                    <m:mrow>
+                      <m:mi>i</m:mi>
+                      <m:mi>ξ</m:mi>
+                      <m:mi>t</m:mi>
+                    </m:mrow>
+                  </m:msup>
+                </m:mfenced>
+                <m:mrow>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>u</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:mi>ξ</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>∈</m:mo>
+                  <m:msup>
+                    <m:mrow>
+                      <m:mi mathvariant="double-struck">R</m:mi>
+                    </m:mrow>
+                    <m:mn>2</m:mn>
+                  </m:msup>
+                </m:mrow>
+              </m:msub>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2260417">The atom <m:math overflow="scroll"><m:msub><m:mi>g</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi></m:mrow></m:msub></m:math> is translated by <emphasis effect="italics">u</emphasis> in time and by <emphasis effect="italics">ξ</emphasis> in frequency.
+The time-and-frequency spread of <m:math overflow="scroll"><m:msub><m:mi>g</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi></m:mrow></m:msub></m:math> is independent of <emphasis effect="italics">u</emphasis> and <emphasis effect="italics">ξ</emphasis>.
+This means that each atom <m:math overflow="scroll"><m:msub><m:mi>g</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi></m:mrow></m:msub></m:math> corresponds to
+a Heisenberg rectangle 
+that has a size <m:math overflow="scroll"><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>t</m:mi></m:msub><m:mspace width="0.45pt"/><m:mo>×</m:mo><m:msub><m:mi>σ</m:mi><m:mi>ω</m:mi></m:msub></m:mrow></m:math>
+independent of its position <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi><m:mo>)</m:mo></m:mrow></m:math>, as shown
+by <link target-id="uid13"/>.</para>
+        <figure id="uid13">
+          <media id="uid13_media" alt="">
+            <image mime-type="image/png" src="../../media/newfig4.png" id="uid13_onlineimage" width="460"><!-- NOTE: attribute width changes image size online (pixels). original width is 460. --></image>
+            <image for="pdf" mime-type="application/postscript" src="../../media/newfig4-f2fa.eps" id="uid13_printimage"/>
+          </media>
+          <caption>Time-frequency boxes (“Heisenberg rectangles”) representing the energy
+spread of two windowed Fourier atoms.</caption>
+        </figure>
+        <para id="id2260591">The windowed Fourier transform 
+projects <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> on each dictionary atom <m:math overflow="scroll"><m:msub><m:mi>g</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi></m:mrow></m:msub></m:math>:</para>
+        <equation id="uid15">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mi>S</m:mi>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>u</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:mi>ξ</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mo>=</m:mo>
+                    <m:mo>〈</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>f</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:msub>
+                      <m:mi>g</m:mi>
+                      <m:mrow>
+                        <m:mi>u</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>ξ</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mo>〉</m:mo>
+                    <m:mo>=</m:mo>
+                    <m:msubsup>
+                      <m:mo>∫</m:mo>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>g</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>-</m:mo>
+                      <m:mi>u</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:msup>
+                      <m:mrow>
+                        <m:mi mathvariant="normal">e</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>i</m:mi>
+                        <m:mi>ξ</m:mi>
+                        <m:mi>t</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>t</m:mi>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2260772">
+It can be interpreted as a Fourier transform of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> at the frequency <emphasis effect="italics">ξ</emphasis>,
+localized by the window <m:math overflow="scroll"><m:mrow><m:mi>g</m:mi><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>-</m:mo><m:mi>u</m:mi><m:mo>)</m:mo></m:mrow></m:math> in the neighborhood of <emphasis effect="italics">u</emphasis>.
+This windowed Fourier transform is highly redundant and represents one-dimensional signals
+by a time-frequency image in <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi><m:mo>)</m:mo></m:mrow></m:math>.
+It is thus necessary to understand how to select many fewer
+time-frequency coefficients that represent the signal efficiently.</para>
+        <para id="id2260855">When listening to music, we perceive sounds that have a
+frequency that varies in time. Chapter 4 shows
+that a spectral line of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> 
+creates high-amplitude windowed Fourier coefficients <m:math overflow="scroll"><m:mrow><m:mi>S</m:mi><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>ξ</m:mi><m:mo>)</m:mo></m:mrow></m:math>
+at frequencies <m:math overflow="scroll"><m:mrow><m:mi>ξ</m:mi><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>)</m:mo></m:mrow></m:math> that depend on time <emphasis effect="italics">u</emphasis>.
+These spectral components are detected and characterized by
+ridge points, which are local maxima in this time-frequency plane.
+Ridge points define a time-frequency approximation support
+<emphasis effect="italics">λ</emphasis> of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> with a geometry that depends on the time-frequency
+evolution of the signal spectral components. Modifying the
+sound duration or audio transpositions are implemented by modifying
+the geometry of the ridge support in time frequency.</para>
+        <para id="id2260962">A windowed Fourier transform decomposes signals over waveforms that
+have the same time and frequency resolution. It is thus effective
+as long as the signal does not include structures having different
+time-frequency resolutions, some being very localized
+in time and others very localized in frequency.  Wavelets address this
+issue by changing the time and frequency resolution.</para>
+        
+      </section>
+      <section id="uid17">
+        <title>Continuous Wavelet Transform</title>
+        <para id="id2260999">In reflection seismology, Morlet knew that the waveforms
+sent underground have a duration that is too long
+at high frequencies to separate the returns of fine, closely spaced
+geophysical layers. Such waveforms are called <emphasis effect="italics">wavelets</emphasis> in
+geophysics. Instead of emitting pulses of equal duration,
+he thought of sending shorter waveforms at high frequencies.
+These waveforms were obtained by scaling the mother
+wavelet, hence the name of this transform. Although Grossmann was working in
+theoretical physics, he recognized in Morlet's approach some ideas
+that were close to his own
+work on coherent quantum states.</para>
+        <para id="id2261018">Nearly forty years after
+Gabor, Morlet and Grossmann reactivated a fundamental
+collaboration between
+theoretical physics and signal processing, which
+led to the formalization of the
+continuous wavelet transform 
+(GrossmannM:84). These ideas were not totally new
+to mathematicians working in harmonic analysis, or to computer vision
+researchers studying multiscale image processing. It was thus
+only the beginning of a rapid catalysis that brought together
+scientists with very different backgrounds.</para>
+        <para id="id2261037">A wavelet dictionary is constructed from a mother
+wavelet <emphasis effect="italics">ψ</emphasis> of zero average</para>
+        <equation id="id2261051">
+          <m:math overflow="scroll" mode="display">
+            <m:mrow>
+              <m:msubsup>
+                <m:mo>∫</m:mo>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+                <m:mrow>
+                  <m:mo>+</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+              </m:msubsup>
+              <m:mi>ψ</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>t</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mspace width="0.166667em"/>
+              <m:mi>d</m:mi>
+              <m:mi>t</m:mi>
+              <m:mo>=</m:mo>
+              <m:mn>0</m:mn>
+              <m:mo>,</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2261102">which is dilated with a scale parameter <emphasis effect="italics">s</emphasis>, and translated
+by <emphasis effect="italics">u</emphasis>:</para>
+        <equation id="uid19">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mi mathvariant="script">D</m:mi>
+                    <m:mo>=</m:mo>
+                    <m:msub>
+                      <m:mfenced separators="" open="{" close="}">
+                        <m:msub>
+                          <m:mi>ψ</m:mi>
+                          <m:mrow>
+                            <m:mi>u</m:mi>
+                            <m:mo>,</m:mo>
+                            <m:mi>s</m:mi>
+                          </m:mrow>
+                        </m:msub>
+                        <m:mrow>
+                          <m:mo>(</m:mo>
+                          <m:mi>t</m:mi>
+                          <m:mo>)</m:mo>
+                        </m:mrow>
+                        <m:mo>=</m:mo>
+                        <m:mfrac>
+                          <m:mn>1</m:mn>
+                          <m:msqrt>
+                            <m:mi>s</m:mi>
+                          </m:msqrt>
+                        </m:mfrac>
+                        <m:mspace width="0.166667em"/>
+                        <m:mi>ψ</m:mi>
+                        <m:mfenced separators="" open="(" close=")">
+                          <m:mfrac>
+                            <m:mrow>
+                              <m:mi>t</m:mi>
+                              <m:mo>-</m:mo>
+                              <m:mi>u</m:mi>
+                            </m:mrow>
+                            <m:mi>s</m:mi>
+                          </m:mfrac>
+                        </m:mfenced>
+                      </m:mfenced>
+                      <m:mrow>
+                        <m:mi>u</m:mi>
+                        <m:mo>∈</m:mo>
+                        <m:mi mathvariant="double-struck">R</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>s</m:mi>
+                        <m:mo>&gt;</m:mo>
+                        <m:mn>0</m:mn>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2261249">
+The  continuous wavelet transform
+of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> at any scale <emphasis effect="italics">s</emphasis> and position
+<emphasis effect="italics">u</emphasis> is the projection of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> on the corresponding wavelet atom:</para>
+        <equation id="uid21">
+          <m:math overflow="scroll" mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mi>W</m:mi>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>u</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:mi>s</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mo>=</m:mo>
+                    <m:mo>〈</m:mo>
+                    <m:mspace width="0.166667em"/>
+                    <m:mi>f</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:msub>
+                      <m:mi>ψ</m:mi>
+                      <m:mrow>
+                        <m:mi>u</m:mi>
+                        <m:mo>,</m:mo>
+                        <m:mi>s</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                    <m:mo>〉</m:mo>
+                    <m:mo>=</m:mo>
+                    <m:msubsup>
+                      <m:mo>∫</m:mo>
+                      <m:mrow>
+                        <m:mo>-</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mo>+</m:mo>
+                        <m:mi>∞</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mi>f</m:mi>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mi>t</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mspace width="0.166667em"/>
+                    <m:mfrac>
+                      <m:mn>1</m:mn>
+                      <m:msqrt>
+                        <m:mi>s</m:mi>
+                      </m:msqrt>
+                    </m:mfrac>
+                    <m:mspace width="0.166667em"/>
+                    <m:msup>
+                      <m:mi>ψ</m:mi>
+                      <m:mo>*</m:mo>
+                    </m:msup>
+                    <m:mfenced separators="" open="(" close=")">
+                      <m:mfrac>
+                        <m:mrow>
+                          <m:mi>t</m:mi>
+                          <m:mo>-</m:mo>
+                          <m:mi>u</m:mi>
+                        </m:mrow>
+                        <m:mi>s</m:mi>
+                      </m:mfrac>
+                    </m:mfenced>
+                    <m:mspace width="-0.166667em"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>t</m:mi>
+                    <m:mo>.</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        <para id="id2261458">
+It represents one-dimensional signals
+by highly redundant time-scale images in <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi><m:mo>)</m:mo></m:mrow></m:math>.</para>
+        <section id="uid22">
+          <title>Varying Time-Frequency Resolution</title>
+          <para id="id2261492">As opposed to windowed Fourier atoms, wavelets have a time-frequency
+resolution that changes.
+The wavelet <m:math overflow="scroll"><m:msub><m:mi>ψ</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi></m:mrow></m:msub></m:math> has a time support
+centered at <emphasis effect="italics">u</emphasis> and proportional to <emphasis effect="italics">s</emphasis>.
+Let us choose a wavelet <emphasis effect="italics">ψ</emphasis> whose Fourier transform
+<m:math overflow="scroll"><m:mrow><m:mover accent="true"><m:mi>ψ</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> is nonzero
+in a positive frequency interval centered at <emphasis effect="italics">η</emphasis>. 
+The Fourier transform <m:math overflow="scroll"><m:mrow><m:msub><m:mover accent="true"><m:mi>ψ</m:mi><m:mo>^</m:mo></m:mover><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi></m:mrow></m:msub><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> is
+dilated by <m:math overflow="scroll"><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>s</m:mi></m:mrow></m:math> and thus is localized in a
+positive frequency
+interval centered at <m:math overflow="scroll"><m:mrow><m:mi>ξ</m:mi><m:mo>=</m:mo><m:mi>η</m:mi><m:mo>/</m:mo><m:mi>s</m:mi></m:mrow></m:math>;
+its size is scaled by <m:math overflow="scroll"><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>s</m:mi></m:mrow></m:math>.
+In the time-frequency plane, the Heisenberg box
+of a wavelet atom <m:math overflow="scroll"><m:msub><m:mi>ψ</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi></m:mrow></m:msub></m:math> is therefore
+a rectangle centered at <m:math overflow="scroll"><m:mrow><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>η</m:mi><m:mo>/</m:mo><m:mi>s</m:mi><m:mo>)</m:mo></m:mrow></m:math>, with
+time and frequency widths, respectively,
+proportional to <emphasis effect="italics">s</emphasis> and <m:math overflow="scroll"><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>s</m:mi></m:mrow></m:math>. 
+When <emphasis effect="italics">s</emphasis> varies, the time and frequency width
+of this time-frequency resolution cell changes, but
+its area remains constant, as illustrated by
+<link target-id="uid24"/>.</para>
+          
+          <para id="id2261760">Large-amplitude wavelet coefficients can detect and measure short
+high-frequency variations because they have a narrow time
+localization at high frequencies. At low frequencies their time
+resolution is lower, but they have a better frequency resolution.
+This modification of time and frequency resolution is adapted to
+represent sounds with sharp attacks, or radar signals having a
+frequency that may vary quickly at high frequencies.</para>
+        </section>
+        <section id="uid23">
+          <title>Multiscale Zooming</title>
+          <para id="id2261780">A wavelet dictionary is also adapted to analyze
+the scaling evolution of transients
+with zooming procedures across scales.
+Suppose now that <emphasis effect="italics">ψ</emphasis> is real.
+Since it has a zero average, a wavelet coefficient <m:math overflow="scroll"><m:mrow><m:mi>W</m:mi><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi><m:mo>)</m:mo></m:mrow></m:math>
+measures the variation
+of <m:math overflow="scroll"><m:mrow><m:mspace width="0.4pt"/><m:mi>f</m:mi></m:mrow></m:math> in a neighborhood of <emphasis effect="italics">u</emphasis> that has a size
+proportional to <emphasis effect="italics">s</emphasis>.
+Sharp signal transitions create large-amplitude wavelet coefficients.</para>
+          <figure id="uid24">
+            <media id="uid24_media" alt="">
+              <image mime-type="image/png" src="../../media/newfig5.png" id="uid24_onlineimage" width="436"><!-- NOTE: attribute width changes image size online (pixels). original width is 436. --></image>
+              <image for="pdf" mime-type="application/postscript" src="../../media/newfig5-7a9e.eps" id="uid24_printimage"/>
+            </media>
+            <caption>Heisenberg time-frequency boxes of two
+wavelets, <m:math overflow="scroll"><m:msub><m:mi>ψ</m:mi><m:mrow><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi></m:mrow></m:msub></m:math> and <m:math overflow="scroll"><m:msub><m:mi>ψ</m:mi><m:mrow><m:msub><m:mi>u</m:mi><m:mn>0</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>s</m:mi><m:mn>0</m:mn></m:msub></m:mrow></m:msub></m:math>.
+When the
+scale <emphasis effect="italics">s</emphasis> decreases, the time support is reduced but
+the frequency spread increases and covers an interval
+that is shifted toward high frequencies.</caption>
+          </figure>
+          <para id="id2261929">Signal singularities have specific scaling invariance characterized by
+Lipschitz exponents. Chapter 6 relates the pointwise
+regularity of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> to the asymptotic decay of the wavelet
+transform amplitude <m:math overflow="scroll"><m:mrow><m:mo>|</m:mo><m:mi>W</m:mi><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>s</m:mi><m:mo>)</m:mo><m:mo>|</m:mo></m:mrow></m:math> when <emphasis effect="italics">s</emphasis> goes to zero.
+Singularities are detected by following
+the local maxima of the wavelet transform acrossscales.</para>
+          <para id="id2261994">In images, wavelet local maxima indicate
+the position of edges, which are
+sharp variations of image intensity.
+It defines scale–space approximation support of <m:math overflow="scroll"><m:mrow><m:mspace width="0.166667em"/><m:mi>f</m:mi></m:mrow></m:math> from which precise
+image approximations are reconstructed.
+At different scales, the geometry of this
+local maxima support provides contours
+of image structures of varying sizes.
+This multiscale edge detection is particularly effective for
+pattern recognition in computer vision (Canny:86).</para>
+          <para id="id2262021">The zooming capability of the wavelet transform
+not only locates isolated singular events, but can
+also characterize more complex multifractal
+ signals
+having nonisolated singularities.
+Mandelbrot (Mandelbrot:82) was the first to recognize
+the existence of multifractals in most corners of nature.
+Scaling one part of a multifractal
+produces a signal that is statistically similar to the
+whole. This self-similarity 
+appears in the continuous
+wavelet transform, which modifies the analyzing scale.
+From global measurements of the wavelet transform decay,
+Chapter 6 measures
+the singularity distribution of multifractals.
+This is particularly important in analyzing their
+properties and testing multifractal models
+in physics or in financial time series.</para>
+        </section>
+      </section>
+      <section id="uid28">
+        <title>Time-Frequency Orthonormal Bases</title>
+        <para id="id2262066">Orthonormal bases of time-frequency atoms
+remove all redundancy and define stable
+representations. A wavelet orthonormal basis is an example of the time-frequency
+basis obtained by scaling a wavelet
+<emphasis effect="italics">ψ</emphasis> with dyadic scales <m:math overflow="scroll"><m:mrow><m:mi>s</m:mi><m:mo>=</m:mo><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup></m:mrow></m:math> and translating it by <m:math overflow="scroll"><m:mrow><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup><m:mi>n</m:mi></m:mrow></m:math>,
+which is written <m:math overflow="scroll"><m:msub><m:mi>ψ</m:mi><m:mrow><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow></m:msub></m:math>. In the time-frequency plane,
+the Heisenberg resolution box of <m:math overflow="scroll"><m:msub><m:mi>ψ</m:mi><m:mrow><m:mi>j</m:mi><m:mo>,</m:mo><m:mi>n</m:mi></m:mrow></m:msub></m:math> is a dilation by <m:math overflow="scroll"><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup></m:math>
+and translation by <m:math overflow="scroll"><m:mrow><m:msup><m:mn>2</m:mn><m:mrow><m:mspace width="0.166667em"/><m:mi>j</m:mi></m:mrow></m:msup><m:mi>n</m:mi></m:mrow></m:math> of the Heisenberg box of <emphasis effect="italics">ψ</emphasis>.
+A wavelet orthonormal is thus a subdictionary of the
+continuous wavelet transform dictionary, which
+yields a perfect
+tiling of the time-frequency plane illustrated in <link target-id="uid29"/>.</para>
+        <figure id="uid29">
+          <media id="uid29_media" alt="">
+            <image mime-type="image/png" src="../../media/newfig6.png" id="uid29_onlineimage" width="430"><!-- NOTE: attribute width changes image size online (pixels). original width is 430. --></image>
+            <image for="pdf" mime-type="application/postscript" src="../../media/newfig6-672c.eps" id="uid29_printimage"/>
+          </media>
+          <caption>The time-frequency boxes of a wavelet
+basis define a tiling of the time-frequency plane.</caption>
+        </figure>
+        <para id="id2262245">One can construct many other orthonormal bases of time-frequency atoms,
+corresponding to different tilings of the time-frequency plane.
+Wavelet packet and local cosine bases are two important examples
+constructed in Chapter 8, with
+time-frequency atoms that split
+the frequency and the time axis, respectively, in intervals of varying sizes.</para>
+        <section id="uid30">
+          <title>Wavelet Packet Bases</title>
+          <para id="id2262269">Wavelet bases divide the frequency axis into intervals of 1 octave bandwidth.
+Coifman, Meyer, and Wickerhauser (CoifmanMW:92) have
+generalized this construction with bases that split the
+frequency axis in intervals of bandwidth that may be adjusted.
+Each frequency interval 
+is covered by the Heisenberg time-frequency boxes
+of wavelet packet functions translated in time, in order to cover the whole
+plane, as shown by <link target-id="uid32"/>.</para>
+          <para id="id2262291">As for wavelets, wavelet-packet coefficients are obtained with a
+filter bank of conjugate mirror filters that split the frequency axis
+in several frequency intervals.
+Different frequency segmentations correspond to different wavelet
+packet bases. For images, a filter bank
+divides the image frequency support in squares of dyadic sizes that
+can be adjusted.</para>
+          <figure id="uid32">
+            <media id="uid32_media" alt="">
+              <image mime-type="image/png" src="../../media/newfig7.png" id="uid32_onlineimage" width="396"><!-- NOTE: attribute width changes image size online (pixels). original width is 396. --></image>
+              <image for="pdf" mime-type="application/postscript" src="../../media/newfig7-85df.eps" id="uid32_printimage"/>
+            </media>
+            <caption>A wavelet packet basis divides the frequency axis in separate
+intervals of varying sizes. A tiling is obtained
+by translating in time the wavelet packets covering
+each frequency interval.</caption>
+          </figure>
+          
+<!--empty paragraphs get left behind.-->
+        </section>
+        <section id="uid33">
+          <title>Local Cosine Bases</title>
+          <para id="id2262341">Local cosine orthonormal bases are
+constructed by dividing the time
+axis instead of the frequency axis.
+The time axis is segmented in successive intervals
+<m:math overflow="scroll"><m:mrow><m:mo>[</m:mo><m:msub><m:mi>a</m:mi><m:mi>p</m:mi></m:msub><m:mo>,</m:mo><m:msub><m:mi>a</m:mi><m:mrow><m:mi>p</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:msub><m:mo>]</m:mo></m:mrow></m:math>.
+The local cosine bases of Malvar (Malvar:88) are obtained
+by designing
+smooth windows <m:math overflow="scroll"><m:mrow><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> that cover each interval
+<m:math overflow="scroll"><m:mrow><m:mo>[</m:mo><m:msub><m:mi>a</m:mi><m:mi>p</m:mi></m:msub><m:mo>,</m:mo><m:msub><m:mi>a</m:mi><m:mrow><m:mi>p</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:msub><m:mo>]</m:mo></m:mrow></m:math>, and by multiplying them
+by cosine functions <m:math overflow="scroll"><m:mrow><m:mo form="prefix">cos</m:mo><m:mo>(</m:mo><m:mi>ξ</m:mi><m:mi>t</m:mi><m:mo>+</m:mo><m:mi>φ</m:mi><m:mo>)</m:mo></m:mrow></m:math> of different frequencies.
+This is yet another idea that has been
+independently studied in physics,
+signal processing, and mathematics.
+Malvar's original construction was for discrete signals.
+At the same time, the physicist Wilson (Wilson:87)
+was designing a  local cosine basis,
+with smooth windows of infinite support, to analyze the
+properties of quantum coherent states.
+Malvar bases were also rediscovered and generalized
+by the harmonic analysts Coifman and Meyer (CoifmanM:91).
+These different views of the same bases brought to
+light mathematical and algorithmic properties
+that opened new applications.</para>
+          <para id="id2262485">A multiplication by <m:math overflow="scroll"><m:mrow><m:mo form="prefix">cos</m:mo><m:mo>(</m:mo><m:mi>ξ</m:mi><m:mi>t</m:mi><m:mo>+</m:mo><m:mi>φ</m:mi><m:mo>)</m:mo></m:mrow></m:math> translates the
+Fourier transform <m:math overflow="scroll"><m:mrow><m:msub><m:mover accent="true"><m:mi>g</m:mi><m:mo>^</m:mo></m:mover><m:mi>p</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> of <m:math overflow="scroll"><m:mrow><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> by <m:math overflow="scroll"><m:mrow><m:mo>±</m:mo><m:mi>ξ</m:mi></m:mrow></m:math>.
+Over positive frequencies,
+the time-frequency box of the modulated
+window <m:math overflow="scroll"><m:mrow><m:msub><m:mi>g</m:mi><m:mi>p</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>t</m:mi><m:mo>)</m:mo></m:mrow><m:mo form="prefix">cos</m:mo><m:mrow><m:mo>(</m:mo><m:mi>ξ</m:mi><m:mi>t</m:mi><m:mo>+</m:mo><m:mi>φ</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>
+is therefore equal to
+the time-frequency box of <emphasis effect="italics">g<sub>p</sub></emphasis> translated by
+<emphasis effect="italics">ξ</emphasis> along frequencies.
+<link target-id=""/> shows
+the time-frequency tiling corresponding to such a
+local cosine basis.
+For images, a two-dimensional cosine basis is constructed by dividing the
+image support in squares of varying sizes.
+</para>
+        </section>
+      </section>
+ 
+  </content>
+</document>
